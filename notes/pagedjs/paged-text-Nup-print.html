@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script
+    src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+  </script>
+  <script src="./paged.polyfill.js"></script>
+  <!--https://gitlab.coko.foundation/pagedjs/interface-polyfill/-/blob/master/interface.css-->
+  <script>
+    class MyHandler extends Paged.Handler {
+      constructor(chunker, polisher, caller) {
+        super(chunker, polisher, caller);
+      }
+
+      afterPageLayout(pageFragment, page) {
+        console.log($(pageFragment).find('.pagedjs_margin.pagedjs_margin-top-right.hasContent'));
+        let h2 = $(pageFragment).find('h2').first()
+        if (h2.length > 0) {
+          let el0 = 'pagedjs_margin.pagedjs_margin-top-right'
+          $(el0).addClass('hasContent');
+
+          let el = '.pagedjs_margin-top-right .pagedjs_margin-content'
+          $(pageFragment).find(el).html($(h2).html());
+        }
+      }
+    }
+    Paged.registerHandlers(MyHandler);
+  </script>
+  <link href="./interface-2022-03-26-Nup-print.css" rel="stylesheet" type="text/css" />
+  <title>Text Only</title>
+</head>
+<body onload="$('body').css('zoom','50%')">
+  <h1>Section 1</h1>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+  <h2>Section 1.1</h1>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+  <h1>Section 2</h1>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+  <h2>Section 2.2</h2>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+  <h1>Section 3</h1>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+  <h1>Section 4</h1>
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ornare est in pellentesque faucibus. Nulla facilisis consequat ipsum nec tempus. Proin in lacus sed urna pharetra laoreet nec eget nunc. Integer neque est, aliquam imperdiet venenatis id, volutpat quis tortor. Nullam a neque odio. Praesent ultrices ante ac est rhoncus, molestie ornare sem maximus. Phasellus tristique sapien a dapibus mollis. Morbi quis neque dignissim, varius sapien sed, iaculis massa. Mauris gravida lectus tortor, in porttitor odio consectetur quis. Vivamus placerat dui mi, sed ultrices ligula ultrices quis. Curabitur nulla mi, ultrices in justo in, cursus feugiat lorem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Fusce feugiat egestas diam, in auctor magna. Vivamus porttitor leo ut magna venenatis, ac bibendum velit tincidunt.
+  </p>
+</body>
+</html>
+

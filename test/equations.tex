@@ -1,0 +1,285 @@
+\newif\ifsolutions
+\solutionstrue % Show solutions
+%\solutionsfalse % Hide solutions
+
+\documentclass{article}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{tikz}
+\usepackage{amssymb}
+
+% fleqn allows setting indent of display math
+\usepackage[fleqn]{amsmath}
+\setlength{\mathindent}{0pt} % Set indent
+% Disable equation numbering (https://tex.stackexchange.com/a/360378)
+\makeatletter
+\renewcommand\tagform@[1]{}
+\makeatother
+
+% Allow Unicode (some, e.g., © and £ at least)
+% https://tex.stackexchange.com/questions/370278/is-there-any-reason-to-use-inputenc
+\usepackage[utf8]{inputenc}
+
+% Hyperlinks
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, urlcolor=blue, linkcolor=blue}
+
+% Prevent indentation of paragraphs
+\setlength\parindent{0pt}
+\setlength{\parskip}{\baselineskip}
+
+% Spacing above/below equations
+% https://tex.stackexchange.com/a/69678
+\AtBeginDocument{%
+ \abovedisplayskip=-\parskip
+ \abovedisplayshortskip=-\parskip
+ \belowdisplayskip=0pt
+ \belowdisplayshortskip=0pt
+}
+
+% Allow 3 additional subsection levels
+% https://tex.stackexchange.com/a/60212
+\usepackage{titlesec}
+\setcounter{secnumdepth}{6}
+% H4 in HTML
+\titleformat{\paragraph}{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+% H5 in HTML
+\titleformat{\subparagraph}{\normalfont\normalsize\bfseries}{\thesubparagraph}{1em}{}
+\titlespacing*{\subparagraph}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+% H6 in HTML
+\titleformat{\subsubparagraph}{\normalfont\normalsize\bfseries}{\thesubsubparagraph}{1em}{}
+\titlespacing*{\subsubparagraph}{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+% So enumerate at all levels is numbers
+% https://tex.stackexchange.com/questions/78842/nested-enumeration-numbering
+\renewcommand{\labelenumii}{\arabic{enumii}.}
+\renewcommand{\labelenumiii}{\arabic{enumiii}.}
+\renewcommand{\labelenumiv}{\arabic{enumiv}.}
+
+\renewcommand{\mbox}{\text}
+\newcommand{\ds}[0]{\displaystyle}
+\newcommand{\ihat}[0]{\hat{\boldsymbol{\imath}}}
+\newcommand{\jhat}[0]{\hat{\boldsymbol{\jmath}}}
+\newcommand{\khat}[0]{\hat{\boldsymbol{k}}}
+\newcommand{\xhat}[0]{\hat{\mathbf{x}}}
+\newcommand{\yhat}[0]{\hat{\mathbf{y}}}
+\newcommand{\zhat}[0]{\hat{\mathbf{z}}}
+\newcommand{\rhat}[0]{\hat{\mathbf{r}}}
+\newcommand{\bfvec}[1]{\vec{\mathbf{#1}}}
+\newcommand{\bfcdot}[0]{\boldsymbol{\cdot}}
+
+\begin{document}
+
+\section{No newlines}
+
+\begin{equation}
+\mathbf{A}=1\ihat
+\end{equation}
+
+\begin{equation*}
+\mathbf{A}=1\ihat
+\end{equation*}
+
+\begin{equation}
+\mathbf{A}=1\ihat
+\end{equation}
+
+\begin{aligned}
+\mathbf{A}=1\ihat
+\end{aligned}
+
+\section{Block in paragraph}
+
+before \begin{equation}
+\mathbf{A}=1\ihat
+\end{equation} after
+
+before \begin{equation*}
+\mathbf{A}=1\ihat
+\end{equation*} after
+
+before \begin{equation}
+\mathbf{A}=1\ihat
+\end{equation} after
+
+before \begin{aligned}
+\mathbf{A}=1\ihat
+\end{aligned} after
+
+\section{Block in paragraph}
+
+before \begin{equation}
+\mathbf{A}=1\ihat
+\end{equation} after
+
+before \begin{equation*}
+\mathbf{A}=1\ihat
+\end{equation*} after
+
+before \begin{equation}
+\mathbf{A}=1\ihat
+\end{equation} after
+
+before \begin{aligned}
+\mathbf{B}=2\ihat
+\end{aligned} after
+
+\section{Block in list}
+
+\begin{enumerate}
+
+  \item before \texttt{$$}
+
+        \begin{equation}
+        \mathbf{A}=1\ihat
+        \end{equation}
+
+        after \texttt{$$}
+
+  \item a $a$
+
+        a \begin{equation}
+        \mathbf{A}=1\ihat
+        \end{equation} b
+
+  \item before \texttt{begin{equation*}}
+        \begin{equation*}
+        \mathbf{A}=1\ihat
+        \end{equation*}
+        after \texttt{begin{equation*}}
+
+  \item before \texttt{begin{equation}}
+        \begin{equation}
+        \mathbf{A}=1\ihat
+        \end{equation}
+        after \texttt{end{equation}}
+
+  \item before \texttt{begin{aligned}}
+        \begin{aligned}
+        \mathbf{A}=1\ihat
+        \end{aligned}
+        after \texttt{end{aligned}}
+
+\end{enumerate}
+
+Equations should be rendered in first paragraph if \texttt{ifsoslutions} attached.
+
+\begin{enumerate}
+
+  \item[5.] \textbf{Correct positioning:} You move a charge of $-3\text{ C}$ straight downward from $A$ to $D$. (a) How much work did you do? (b) How much work was done by the electric field? (c) By how much has the potential energy of the charge changed?
+
+            \ifsolutions
+            \textbf{Correct positioning:} Your force and the force due to the field are both perpendicular to the direction of movement. So the work done by both forces is zero: (a) $0\text{ J}$ (b) $0\text{ J}$ (c) $0 \text{ J}$.
+            \else
+            \textbf{Correct positioning:} Your force and the force due to the field are both perpendicular to the direction of movement. So the work done by both forces is zero: (a) $0\text{ J}$ (b) $0\text{ J}$ (c) $0 \text{ J}$.
+            \fi
+
+\end{enumerate}
+
+\begin{enumerate}
+
+  \item before
+        \begin{equation}
+        \mathbf{A}=1\ihat
+        \end{equation}
+
+\end{enumerate}
+
+\textbf{Error:} Caused by \texttt{$$} after ``before" and ``after"
+
+\begin{enumerate}
+
+  \item before \texttt{\begin{equation}
+        \end{equation}
+        \mathbf{A}=1\ihat
+        \begin{equation}
+        after
+
+  \item before \texttt{\begin{equation}
+        \end{equation}
+        \mathbf{A}=1\ihat
+        \begin{equation}
+        after
+
+\end{enumerate}
+
+\section{Newlines (TODO?)}
+
+$$
+\mathbf{A}=1\ihat
+
+$$
+
+\begin{equation*}
+\mathbf{A}=1\ihat
+
+\end{equation*}
+
+\begin{equation}
+\mathbf{A}=1\ihat
+
+\end{equation}
+
+\begin{aligned}
+\mathbf{A}=1\ihat
+
+\end{aligned}
+
+\section{Inline}
+
+before $\mathbf{A}=1\ihat$ after
+
+before
+$
+\mathbf{A}=1\ihat
+$
+after
+
+before
+
+$
+\mathbf{A}=1\ihat
+$
+
+after
+
+\section{\texttt{*}, \texttt{_}, and \texttt{'}}
+
+\begin{equation}
+A_*=B_*
+\end{equation}
+
+\begin{equation}
+A_**=B_**
+\end{equation}
+
+$A**=B**$
+
+\begin{equation}
+A**=B**
+\end{equation}
+
+$A**=B**$
+
+$A'=B'$
+
+\section{In HTML}
+
+\textbf{Test of dealing with < and <}
+
+$r<R$, …  $a>b$
+
+\begin{equation}
+a<R,…,b<c
+\end{equation}
+
+\begin{equation*}
+r<R, …  a>b
+\end{equation*}
+
+\begin{equation}
+r<R, …  a>b
+\end{equation}
+
+\end{document}

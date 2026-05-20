@@ -1,0 +1,16 @@
+\begin{document}
+
+https://github.com/KaTeX/KaTeX/issues/2003
+
+\section{A \label{sec:A}}
+
+\ref{sec:A}
+
+\begin{equation}
+b=1
+\end{equation}
+\label{eqn:b}
+
+\ref{eqn:b}
+
+\end{document}

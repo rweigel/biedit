@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+
+
+<head>
+  <meta charset="utf-8">
+  <title>ACE</title>
+  <style>
+#editor { 
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+</style>    
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js">
+  </script>
+
+  <script
+    src="/notes/ace/mode-people_code.js">
+  </script>
+
+<body>
+
+   <div id="editor">/*-------------------------------------------------------------------*/
+/* The Verify_Totp function can be used in SignOn PeopleCode to      */
+/* validate inputted Time-Based One-Time Passwords (TOTPs) provided  */
+/* at login. Only users with the PSM_TOTP_USER Permission List will  */
+/* be required to provide a TOTP. This function will not apply to    */
+/* other users. If a TOTP user provides an invalid TOTP, then they   */
+/* will not be authenticated into the system even if they provide    */
+/* correct username and password credentials.                        */
+/*-------------------------------------------------------------------*/
+
+Function Verify_Totp()
+   
+   /* If the user does not have the TOTP User PL, then let them proceed */
+   If Not (IsUserInPermissionList("PSM_TOTP_USER")) Then
+      Return;
+   End-If;
+   
+   /* If the posted totp parameter is blank, then set auth result to false */
+   Local string &sTotpInput = %Request.GetParameter("totp");
+   
+   If None(&sTotpInput) Then
+      SetAuthenticationResult( False);
+   End-If;
+   
+   /* TODO: Get the user's secret key from the DB */
+   Local string &sSecretKey = "CIFNEMSE4OM73YPS";
+   
+   /* Validate the totp value */
+   Local JavaObject &manager = CreateJavaObject("javax.script.ScriptEngineManager");
+   Local JavaObject &engine = &manager.getEngineByName("JavaScript");
+   Local string &program = GetHTMLText(HTML.PSM_SHA) | GetHTMLText(HTML.PSM_TOTP);
+   
+   &engine.put("userKey", &sSecretKey);
+   &engine.put("userOtp", &sTotpInput);
+   &engine.put("w", 5); /* window: 5 * 30s = 2.5 min */
+   &engine.eval(&program);
+   
+   /* If the totp value is invalid, then set auth result to false */
+   Local string &result = &engine.get("result").toString();
+   If &result <> "true" Then
+      SetAuthenticationResult( False);
+   End-If;
+   
+End-Function;
+  </div>
+  
+</body>
+<script>
+var editor = ace.edit("editor");
+var JavaScriptMode = ace.require("ace/mode/people_code").Mode;
+editor.session.setMode(new JavaScriptMode());
+editor.setOption("showPrintMargin", false);
+editor.getSession().setTabSize(3);
+</script>
+</html>

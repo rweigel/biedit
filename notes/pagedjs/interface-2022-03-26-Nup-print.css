@@ -1,0 +1,135 @@
+/* CSS for Paged.js interface – v0.2 */
+
+/* Change the look */
+:root {
+    --color-background: whitesmoke;
+    --color-pageSheet: #cfcfcf;
+    --color-pageBox: violet;
+    --color-paper: white;
+    --color-marginBox: transparent;
+    --pagedjs-crop-color: black;
+    --pagedjs-crop-shadow: white;
+    --pagedjs-crop-stroke: 1px;
+}
+
+/* To define how the book look on the screen: */
+@media screen {
+    body {
+        background-color: var(--color-background);
+    }
+
+    .pagedjs_pages {
+        display: flex;
+        flex: 0;
+        flex-wrap: wrap;
+    }
+
+    .pagedjs_page {
+        background-color: var(--color-paper);
+        box-shadow: 0 0 0 1px var(--color-pageSheet);
+        margin: 0;
+        flex-shrink: 0;
+        flex-grow: 0;
+        margin: 10px;
+    }
+
+    .pagedjs_pagebox{
+        box-shadow: 0 0 0 1px var(--color-pageBox);
+    }
+
+    .pagedjs_left_page{
+        z-index: 20;
+    }
+
+    .pagedjs_left_page .pagedjs_bleed-right .pagedjs_marks-crop {
+        border-color: transparent;
+    }
+    
+    .pagedjs_left_page .pagedjs_bleed-right .pagedjs_marks-middle{
+        width: 0;
+    } 
+
+
+h1 {
+    string-set: h1_title content(text);
+}
+h2 {
+/*    string-set: h2_title content(text);*/
+}
+
+@media screen {
+
+    .pagedjs_left_page .pagedjs_bleed-right .pagedjs_marks-crop {
+        border-color: var(--pagedjs-crop-color);
+    }
+
+    .pagedjs_margin-top-left-corner-holder,
+    .pagedjs_margin-top,
+    .pagedjs_margin-top-left,
+    .pagedjs_margin-top-center,
+    .pagedjs_margin-top-right,
+    .pagedjs_margin-top-right-corner-holder,
+    .pagedjs_margin-bottom-left-corner-holder,
+    .pagedjs_margin-bottom,
+    .pagedjs_margin-bottom-left,
+    .pagedjs_margin-bottom-center,
+    .pagedjs_margin-bottom-right,
+    .pagedjs_margin-bottom-right-corner-holder,
+    .pagedjs_margin-right,
+    .pagedjs_margin-right-top,
+    .pagedjs_margin-right-middle,
+    .pagedjs_margin-right-bottom,
+    .pagedjs_margin-left,
+    .pagedjs_margin-left-top,
+    .pagedjs_margin-left-middle,
+    .pagedjs_margin-left-bottom {
+        box-shadow: 0 0 0 0.1px inset gray;
+    }
+}
+
+@media print {
+
+    .pagedjs_pages {
+        display: flex;
+        flex: 0;
+        flex-wrap: wrap;
+    }
+
+    .pagedjs_page {
+        width: 4.25in;
+        height: 5.25in;
+        background-color: var(--color-paper);
+        box-shadow: 0 0 0 1px var(--color-pageSheet);
+        margin: 0;
+        flex-shrink: 0;
+        flex-grow: 0;
+        margin: 10px;
+    }
+
+  @page {
+
+    marks: crop;
+    bleed: 0.125in;
+    /*
+    size: 8.25in 10.75in;
+    margin-top: 0.5in;
+    margin-right: 0.5in;
+    margin-bottom: 0.5in;
+    margin-left: 0.5in;
+    */
+
+
+    @bottom-right-corner {
+      content: counter(page);
+    }
+
+    @top-left {
+      content: string(h1_title);
+    }
+
+    @top-right {
+      content: string(h2_title);
+    }
+
+  }
+}

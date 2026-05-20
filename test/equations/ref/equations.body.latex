@@ -1,0 +1,214 @@
+\begin{document}
+
+\section{No newlines}
+
+\begin{equation}
+\mathbf{A}=1\ihat
+\end{equation}
+
+\begin{equation*}
+\mathbf{A}=1\ihat
+\end{equation*}
+
+\begin{equation}
+\mathbf{A}=1\ihat
+\end{equation}
+
+\begin{aligned}
+\mathbf{A}=1\ihat
+\end{aligned}
+
+\section{Block in paragraph}
+
+before \begin{equation}
+\mathbf{A}=1\ihat
+\end{equation} after
+
+before \begin{equation*}
+\mathbf{A}=1\ihat
+\end{equation*} after
+
+before \begin{equation}
+\mathbf{A}=1\ihat
+\end{equation} after
+
+before \begin{aligned}
+\mathbf{A}=1\ihat
+\end{aligned} after
+
+\section{Block in paragraph}
+
+before \begin{equation}
+\mathbf{A}=1\ihat
+\end{equation} after
+
+before \begin{equation*}
+\mathbf{A}=1\ihat
+\end{equation*} after
+
+before \begin{equation}
+\mathbf{A}=1\ihat
+\end{equation} after
+
+before \begin{aligned}
+\mathbf{B}=2\ihat
+\end{aligned} after
+
+\section{Block in list}
+
+\begin{enumerate}
+
+  \item before \texttt{$$}
+
+        \begin{equation}
+        \mathbf{A}=1\ihat
+        \end{equation}
+
+        after \texttt{$$}
+
+  \item a $a$
+
+        a \begin{equation}
+        \mathbf{A}=1\ihat
+        \end{equation} b
+
+  \item before \texttt{begin{equation*}}
+        \begin{equation*}
+        \mathbf{A}=1\ihat
+        \end{equation*}
+        after \texttt{begin{equation*}}
+
+  \item before \texttt{begin{equation}}
+        \begin{equation}
+        \mathbf{A}=1\ihat
+        \end{equation}
+        after \texttt{end{equation}}
+
+  \item before \texttt{begin{aligned}}
+        \begin{aligned}
+        \mathbf{A}=1\ihat
+        \end{aligned}
+        after \texttt{end{aligned}}
+
+\end{enumerate}
+
+Equations should be rendered in first paragraph if \texttt{ifsoslutions} attached.
+
+\begin{enumerate}
+
+  \item[5.] \textbf{Correct positioning:} You move a charge of $-3\text{ C}$ straight downward from $A$ to $D$. (a) How much work did you do? (b) How much work was done by the electric field? (c) By how much has the potential energy of the charge changed?
+
+            \ifsolutions
+            \textbf{Correct positioning:} Your force and the force due to the field are both perpendicular to the direction of movement. So the work done by both forces is zero: (a) $0\text{ J}$ (b) $0\text{ J}$ (c) $0 \text{ J}$.
+            \else
+            \textbf{Correct positioning:} Your force and the force due to the field are both perpendicular to the direction of movement. So the work done by both forces is zero: (a) $0\text{ J}$ (b) $0\text{ J}$ (c) $0 \text{ J}$.
+            \fi
+
+\end{enumerate}
+
+\begin{enumerate}
+
+  \item before
+        \begin{equation}
+        \mathbf{A}=1\ihat
+        \end{equation}
+
+\end{enumerate}
+
+\textbf{Error:} Caused by \texttt{$$} after ``before" and ``after"
+
+\begin{enumerate}
+
+  \item before \texttt{\begin{equation}
+        \end{equation}
+        \mathbf{A}=1\ihat
+        \begin{equation}
+        after
+
+  \item before \texttt{\begin{equation}
+        \end{equation}
+        \mathbf{A}=1\ihat
+        \begin{equation}
+        after
+
+\end{enumerate}
+
+\section{Newlines (TODO?)}
+
+$$
+\mathbf{A}=1\ihat
+
+$$
+
+\begin{equation*}
+\mathbf{A}=1\ihat
+
+\end{equation*}
+
+\begin{equation}
+\mathbf{A}=1\ihat
+
+\end{equation}
+
+\begin{aligned}
+\mathbf{A}=1\ihat
+
+\end{aligned}
+
+\section{Inline}
+
+before $\mathbf{A}=1\ihat$ after
+
+before
+$
+\mathbf{A}=1\ihat
+$
+after
+
+before
+
+$
+\mathbf{A}=1\ihat
+$
+
+after
+
+\section{\texttt{*}, \texttt{_}, and \texttt{'}}
+
+\begin{equation}
+A_*=B_*
+\end{equation}
+
+\begin{equation}
+A_**=B_**
+\end{equation}
+
+$A**=B**$
+
+\begin{equation}
+A**=B**
+\end{equation}
+
+$A**=B**$
+
+$A'=B'$
+
+\section{In HTML}
+
+\textbf{Test of dealing with < and <}
+
+$r<R$, …  $a>b$
+
+\begin{equation}
+a<R,…,b<c
+\end{equation}
+
+\begin{equation*}
+r<R, …  a>b
+\end{equation*}
+
+\begin{equation}
+r<R, …  a>b
+\end{equation}
+
+\end{document}

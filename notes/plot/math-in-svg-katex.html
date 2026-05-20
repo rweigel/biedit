@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body {
+  margin: 0px;
+  background-size: 5px 5px;
+  background-image:
+    linear-gradient(to right, grey .1px, transparent .1px),
+    linear-gradient(to bottom, grey .1px, transparent .1px);
+}
+</style>  
+<title>KaTeX in SVG diagram</title>
+  <link
+    id='katex-css'
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.css"
+  />
+  <script
+    src="https://cdn.jsdelivr.net/npm/katex@0.13.13/dist/katex.min.js">
+  </script>
+  <script
+    src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+  </script>
+</head>
+<body>
+  <p>Positioning of foreign object is difficult. It is not clear how calculations are made.
+  In Safari, zooming causes svg object to scale, but not text. Conclusion is that foreign object is not a good option.</p>
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100" height="100">
+    <circle cx="50" cy="50" r="50" opacity="0.1" stroke="red" />
+    <circle cx="50" cy="50" r="2" fill="black" />
+    <foreignObject style="display:inline-block;border: .1px solid blue" x="49.50" y="49.50" width="100" height="100">
+      <xhtml:div id="math" xmlns="http://www.w3.org/1999/xhtml"></xhtml:div>
+    </foreignObject>
+  </svg>
+  <div id="math1" style="display:inline-block;border: .1px solid blue"></div>
+  <div id="math2" style="display:inline-block;border: .1px solid blue"></div>
+
+  <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="100" height="100">
+    <circle cx="50" cy="50" r="50" opacity="0.1" stroke="red" />
+    <circle cx="50" cy="50" r="2" fill="black" />
+    <foreignObject style="display:inline-block;border: 0.2px solid blue" x="50" y="50" width="100" height="100">
+      <div id="mathcentered" xmlns="http://www.w3.org/1999/xhtml"></div>
+    </foreignObject>
+  </svg>
+</body>
+<script>
+  let str = '\\displaystyle{x+1\\over y-1}';
+  let html = katex.renderToString(str);
+  $("#math1").html(html);
+  $("#math2").html(html);
+  $("#mathcentered").html(html);
+
+  $("#math").html(html);
+  let elem = document.getElementById('math1');
+  let rect = elem.getBoundingClientRect();
+
+  console.log($("#math1").outerWidth(true)) 
+  console.log($("#math1").outerHeight(true))
+  console.log($("#math1").width())
+  console.log($("#math1").height())
+  console.log($("#math1").offsetWidth)
+  console.log($("#math1").offsetHeight)
+  console.log(rect.width)
+  console.log(rect.height)
+
+  console.log("border-width:" + ($("#math1").attr('border')))
+  console.log($(".katex").width())
+  console.log($(".katex").height())
+  $("#math").html(html);
+  $("#math2").css('width',rect.width+4); // Need 4 to get same size
+  $("#math2").css('height',rect.height-2); // Need -2 to get same size
+  console.log(rect.width)
+  console.log(rect.height)
+  $("#math").parent().attr('width',rect.width+6); // Why 6?!
+  $("#math").parent().attr('height',rect.height);
+  $("#mathcentered").parent().attr('width',rect.width+6); // Why 6?!
+  $("#mathcentered").parent().attr('height',rect.height);
+  x = $("#mathcentered").parent().attr('x') - (rect.width+6)/2
+  y = $("#mathcentered").parent().attr('y') - (rect.height+4)/2 // Why 4?
+  $("#mathcentered").parent().attr('x',x);
+  $("#mathcentered").parent().attr('y',y);
+</script>
+
+</html>
+

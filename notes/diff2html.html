@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+
+
+<head>
+  <meta charset="utf-8">
+  <title>diff2html</title>
+ 
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/diff2html/2.8.0/diff2html.min.css">
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/4.0.1/diff.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/diff2html/2.8.0/diff2html.min.js"></script>
+
+  <style>
+    .d2h-moved {display: none;}
+    .d2h-icon {display: none;}
+    .d2h-file-header {height: 1em;}
+  </style>
+  <script>
+    window.onload = function(event) {
+     diff('../test/code.html','../test/code.html',diffdisplay);
+    }
+
+    function diff(file1, file2, diffdisplay, cb) {
+  
+      fetchURLs(file1, file2,
+        (data) => {
+          let diff = Diff.createTwoFilesPatch(
+                      file1, file2, data[0], data[1]);          
+          let difflen = diff.split("\n");
+          if (difflen > 5) {
+            if (diffdisplay) diffdisplay(diff);
+            if (cb) cb(diff);
+          } else {
+            if (diffdisplay) diffdisplay("");
+            if (cb) cb("");
+          }
+        }
+      )
+
+      async function fetchURLs(file1, file2, cb) {
+        try {
+          let data = await Promise.all([
+            fetch(file1).then((res) => res.text()),
+            fetch(file2).then((res) => res.text())
+          ]);
+          cb(data);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+
+    function diffdisplay(diff) {
+      let conf = {
+                    inputFormat: 'diff',
+                    showFiles: false,
+                    matching: 'lines',
+                    outputFormat: 'side-by-side'
+                };
+
+      if (diff === "") {
+        document.getElementById("difftext").innerHTML = "No differences";
+        document.getElementById("diffhtml").innerHTML = "No differences";
+      } else {
+        let diffHtml = Diff2Html.getPrettyHtml(diff, conf);
+        document.getElementById("difftext").innerHTML = diff;
+        document.getElementById("diffhtml").innerHTML = diffHtml;
+      }
+    }
+
+  </script>
+</head>
+<body">
+  <div id="diffhtml"></div>
+  <pre id="difftext"></pre>
+</body>

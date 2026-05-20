@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+  <meta charset="UTF-8">
+  <title>DOCX Creator and Viewer</title>
+
+  <script src="https://unpkg.com/promise-polyfill/dist/polyfill.min.js"></script>
+  <!--lib uses jszip-->
+  <script src="https://unpkg.com/jszip/dist/jszip.min.js"></script>
+  <script src="docx-preview.js"></script>
+  <script>
+    var docx_preview = docx;
+  </script>
+  <script src='https://unpkg.com/docx@7.1.0/build/index.js'></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js'></script>
+
+  <script id="rendered-js" >
+    function generate() {
+      const doc = new docx.Document({
+        sections: [
+        {
+            properties: {},
+            children: [
+            new docx.Paragraph({
+              children: [
+                new docx.Math({children: [new docx.MathRun("$e^{ix}$")]})]
+            })
+          ]
+        }]
+      })
+  
+      docx.Packer.toBlob(doc).then(blob => {
+        console.log(blob);
+        docx_preview.renderAsync(blob, document.getElementById("container"))
+            .then(x => console.log("docx: finished"));
+        saveAs(blob, "example.docx");
+        //console.log("Document created successfully");
+      });
+    }
+  </script>
+
+</head>
+
+<body translate="no" onload="generate()">
+  <p>See https://github.com/dolanmiu/docx/issues/290 for how to view equation in MS Word</p>
+  <div id="container"></div>
+</body>
+
+</html>
+ 

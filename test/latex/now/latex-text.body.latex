@@ -1,0 +1,65 @@
+\begin{document}
+
+\section{Usage}
+
+a \textbf{x} b
+
+\underline{abc    } \texttt{abc} sdfsdf
+
+\section{Spacing \texttt{bf} et al.}
+
+\begin{enumerate}
+
+  \item a c (nothing between a and c)
+
+  \item a {\bf} c (one hair space)
+
+  \item a {\bf } c (one hair space)
+
+  \item a { \bf} c (one full space)
+
+  \item a { \bf } c (space after bf replaced with full space)
+
+  \item a {\bf b} c (shift for bold)
+
+  \item a {\bf b } c (space replaced with nbsp)
+
+  \item a {\bf b  } c (last space replaced with nbsp)
+
+  \item a { \bf b} c (full space added before b)
+
+  \item a { \bf b } c (spaces replaced with full space)
+
+  \item a {  \bf b  } c (first and last spaces replaced with full space)
+
+  \item a {   \bf b   } c (full space added before and after b)
+
+  \item a {   \bf} c (full and thin space added before and after b)
+
+\end{enumerate}
+
+\section{Spacing \texttt{textbf} et al.}
+
+\begin{enumerate}
+
+  \item a b
+
+  \item a \textbf{} b
+
+  \item a \textbf{a} b
+
+  \item a \textbf{a } b
+
+  \item a \textbf{a  } b
+
+  \item a \textbf{ a} b
+
+  \item a \textbf{  a} b
+
+  \item a \textbf{ a } b
+
+  \item a \textbf{  a  } b
+
+\end{enumerate}
+
+\end{document}

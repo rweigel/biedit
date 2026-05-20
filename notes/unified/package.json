@@ -1,0 +1,40 @@
+{
+  "name": "demo",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "esbuild": "^0.13.0",
+    "prettier": "^2.0.0",
+    "xo": "^0.44.0"
+  },
+  "scripts": {
+    "build": "esbuild index.js --bundle --minify --target=es2020 --format=esm --outfile=build.js",
+    "lint": "prettier . -w && xo",
+    "test": "npm run build && npm run lint"
+  },
+  "prettier": {
+    "tabWidth": 2,
+    "useTabs": false,
+    "singleQuote": true,
+    "bracketSpacing": false,
+    "semi": false,
+    "trailingComma": "none"
+  },
+  "xo": {
+    "envs": [
+      "browser"
+    ],
+    "prettier": true,
+    "ignore": [
+      "build.js"
+    ]
+  },
+  "dependencies": {
+    "unified": "^10.1.2",
+    "rehype-stringify": "^9.0.3",
+    "remark-parse": "^10.0.1",
+    "remark-rehype": "^10.1.0",
+    "unified-latex": "^1.1.3",
+    "latex-ast-parser": "^1.1.0"
+  }
+}

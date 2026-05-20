@@ -1,0 +1,31 @@
+\begin{document}
+
+\section{\texttt{[3em]} stand-alone}
+
+top
+
+\vskip 36pt
+
+5em lower
+
+\section{\texttt{[3em]} as part of paragraph}
+
+\textbf{abaaa}
+
+\section{\texttt{\vspace} with \texttt{div}}
+
+A vertical space of 3em with a div:
+
+\vskip 36pt
+
+New p.
+
+\section{\texttt{\vspace}}
+
+A vertical space of 3em with \texttt{\vspace}
+
+\vskip 36pt
+
+New p.
+
+\end{document}

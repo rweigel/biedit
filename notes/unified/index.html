@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<meta charset="utf8" />
+<title>demo</title>
+<link rel="stylesheet" href="index.css" />
+<div id="root"></div>
+<script type="module" src="build.js"></script>
+<script type="module">
+  const moduleSpecifier = './build.js'
+  import(moduleSpecifier).then((module) => {
+    main()
+  })
+</script>
+<script>
+  function main() {
+    console.log('main')
+    //let ast = latexParser.parse('\\textbf{  \\emph{a}  }')
+    let ast = latexParser.parse('{\\bf}')
+    console.log(ast)
+
+    let html = convertToHtml(ast)
+    console.log(html)
+
+    return
+    unified()
+      .use(remarkParse)
+      .use(remarkRehype)
+      .use(rehypeStringify)
+      .process('# Hello world!')
+      .then(
+        (file) => {
+          console.log(String(file))
+        },
+        (error) => {
+          console.error(String(error))
+        }
+      )
+  }
+</script>

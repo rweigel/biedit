@@ -1,0 +1,50 @@
+\begin{document}
+
+\begin{enumerate}
+
+  \item A
+
+  \item B
+
+  \item A
+        A
+
+        B
+
+    \begin{enumerate}
+
+      \item a
+            a
+
+                \ifsolutions
+                $true$
+                \else
+                $false$
+                \fi
+
+            b
+
+    \end{enumerate}
+
+  \item A
+    A
+
+        B
+
+      \begin{enumerate}
+
+        \item a
+              a
+
+              b
+
+        \item a
+              b
+
+              \input{latex-from-html.tikz}
+
+      \end{enumerate}
+
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,253 @@
+<!doctype html>
+<html>
+
+<head>
+
+  <script
+    src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+  </script>
+
+  <script>
+    $(document).ready(function() {
+
+      // Resize horizontally based on movement of center #drag element.
+      $('#drag').on('mousedown', function(e) {
+
+        // https://www.gyrocode.com/articles/how-to-detect-mousemove-event-over-iframe-element/
+        $('#pdf-preview-object').css('pointer-events', 'none');
+
+        // See also
+        // https://htmldom.dev/create-resizable-split-views/
+        var $dragable = $(this);
+        var startWidth = $dragable.css('margin-left');
+        var pX = e.pageX;
+        // Show cursor as col-resize when cursor anywhere in body
+        // (fast movement will move cursor off element; this 
+        // ensures cursor does not change while moving)
+        $("body").css("cursor", "col-resize"); 
+        $(document).on('mouseup', function(e){
+            $(document).off('mouseup').off('mousemove');
+            $("body").css("cursor", "default");
+            $('#pdf-preview-object').css('pointer-events', 'auto');
+            //editor.resize();
+        });
+
+        $(document).on('mousemove', function(me) {
+            me = me || window.event;
+            me.preventDefault(); // Prevents highlight of text in display.
+            var off = $('#left').offset();
+            var w = $("#left").outerWidth() - $("#left").innerWidth();
+            var mx = me.pageX - off.left - w - $('#drag').width();
+            //console.log(me);
+            $('#left').css({"width": mx});
+            $('#hleft').css({"width": mx});
+        });
+      });
+
+     }); 
+  </script>
+
+  <style>
+
+    html, body {
+      height: calc(100% - 8px);
+      margin: 4px;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      background-color: white;
+    }
+
+    #wrapper {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: rgb(240,240,240);
+    }
+
+      #header {
+        flex: 0 0 auto;
+        border: 1px solid black;
+      }
+
+      #content {
+        overflow-x: hidden;
+        overflow-y: hidden;
+
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+      }
+
+        #left {
+          overflow-x: hidden;
+          overflow-y: hidden;
+
+          width: 50%;
+          display: flex;
+          flex-direction: column;
+        }
+
+          #left-header {
+            flex: 0 0 auto;
+            margin-right: 0.25em;
+          }
+
+          #left-content {
+            overflow-x: hidden;
+            overflow-y: hidden;
+
+            display: flex;
+            flex-direction: row;
+          }
+
+            #left-toc {
+              flex: 1;
+              flex-basis: 20%;
+              overflow-x: hidden;
+              overflow-y: auto;
+            }
+
+            #left-document {
+              flex: 2;
+              flex-basis: 80%;
+              overflow-x: hidden;
+              overflow-y: auto;
+            }
+
+          #left-footer {
+            flex: 2;
+            flex: 0 0 auto;
+          }
+
+        #drag {
+          flex: 0 0 auto;
+          cursor: col-resize;
+          margin-left: 1px;
+          margin-right: 1px;
+          background: black;
+          box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);
+          width: 2px;
+        }
+
+        #right {
+          overflow-x: hidden;
+          overflow-y: hidden;
+
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+        }
+
+          #right-header {
+            flex: 0 0 auto;
+            margin-right: 0.25em;
+          }
+
+            #zoom-right-input {
+              height: 1em;
+              width: 5em;
+            }
+
+            #timing {
+              float: right;
+              height: 1em;
+              font-family: monospace;
+            }
+
+          #right-content {
+            flex: 2;
+            overflow-x: hidden;
+            overflow-y: hidden;
+
+            display: flex;
+            flex-direction: row;
+          }
+
+            #right-toc {
+              flex: 1;
+              flex-basis: 20%;
+              overflow-x: hidden;
+              overflow-y: auto;
+            }
+
+            #right-document {
+              flex: 2;
+              flex-basis: 80%;
+              overflow-x: hidden;
+              overflow-y: auto;
+            }
+
+          #right-footer {
+            flex: 1;
+            flex: 0 0 auto;
+          }
+
+      .footer {
+        flex: 3;
+        flex: 0 0 auto;
+        border: 1px solid black;
+      }
+  </style>
+
+</head>
+
+<body>
+
+  <div id="wrapper">
+    <div id="header">Main Header</div>
+    <div id="content">
+      <div id="left">
+        <div id="left-header">
+          <select id="file">${files}</select>
+          <span style="float:right">
+            <span id="status">Status</span>
+            <input type="checkbox" id="markdownTOC">
+            <label for="markdownTOC">Markdown TOC</label>
+          </span>
+        </div>
+        <div id="left-content">
+          <div id="#editor-toc"></div>
+            <!-- 
+              contenteditable=true so Grammarly works. Sometimes
+              spellcheck="true" does not enable spell check on all
+              browsers. See https://github.com/ajaxorg/ace/issues/2107
+            -->
+            <div id="editor" spellcheck="true" contenteditable="true"></div>
+        </div>
+        <div id="left-footer">Left footer</div>
+      </div>
+      <div id="drag"></div>
+      <div id="right">
+        <div id="right-header">
+          <select id="view-options">
+            <option value="web">Web Page</option>
+            <option value="web-standalone">Web Page - New Tab</option>
+            <option value="html">HTML - Formatted</option>
+            <option value="html-raw">HTML - Raw</option>
+            <option value="md-reference">Markdown Reference</option>
+            <option value="pdf">PDF</option>
+          </select>
+          <input
+              id="zoom-right-input" 
+              min="10"
+              max="200"
+              value="100"
+              step="10"
+              type="range"
+            />
+          <div id="timing">0</div>
+        </div>
+        <div id="right-content">
+          <div id="toc"></div>
+          <div id="display"></div>
+        </div>
+        <div id="right-footer">Right Footer</div>      
+      </div>
+    </div>
+    <div class="footer">Main Footer</div>
+  </div>
+
+</body>
+
+</html>
+

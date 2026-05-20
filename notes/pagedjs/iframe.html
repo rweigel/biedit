@@ -1,0 +1,1130 @@
+<html>
+<head>
+    <title>Sample Print Test Document</title>
+
+    <script>
+        this.ready = new Promise(function ($) {
+            document.addEventListener('DOMContentLoaded', $, {
+                once: true
+            })
+        })
+    </script>
+    <script src="https://unpkg.com/pagedjs/dist/paged.js"></script>
+</head>
+
+<body class="article">
+    <script>
+        ready.then(async function () {
+            let flowText = document.querySelector(".article");
+            let paged = new Paged.Previewer()
+
+            paged.preview(flowText.content).then((flow) => {
+                let editable = document.querySelectorAll(".pagedjs_page .pagedjs_area > div");
+                for (let i = 0; i < editable.length; i++) {
+                    editable[i].setAttribute("contenteditable", false);
+                }
+            });
+
+            //To Resize the content
+            let resizer = () => {
+                let pages = document.querySelector(".pagedjs_pages");
+
+                if (pages) {
+                    let scale = ((window.innerWidth * .9) / pages.offsetWidth);
+                    if (scale < 1) {
+                        pages.style.transform =
+                            `scale(${scale}) translate(${(window.innerWidth / 2) - ((pages.offsetWidth * scale / 2))}px, 0)`;
+                    } else {
+                        pages.style.transform = "none";
+                    }
+                }
+            };
+            resizer();
+
+            window.addEventListener("resize", resizer, false);
+
+            paged.on("rendering", () => {
+                resizer();
+            });
+        });
+    </script>
+    <div class="article-part article-title">Sample Print Test Document</div>
+    <div class="article-part article-heading article-Introduction_h1">
+        <h1 id="H6509242">Lorem </h1>
+      <h2>Lorem</h2>
+    </div>
+    <div class="article-part article-heading article-Basic_information_h3">
+        <h3 id="H5129767">Lorem Lorem </h3>
+    </div>
+    <div class="article-part article-richtext article-Basic_information">
+        <p>Lorem Lorem Lorem : Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+        <p>Lorem Lorem Lorem : Lorem </p>
+        <p>Lorem Lorem Lorem :</p>
+        <table data-width="100" data-aligned="center" data-layout="fixed" class="table-100 table-center table-fixed">
+            <tbody>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem .Lorem .Lorem .</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="article-part article-table article-Stage_of_development_table">
+        <table data-width="100" data-aligned="center" data-layout="auto" class="table-100 table-center table-auto">
+            <tbody>
+                <tr>
+                    <th>
+                        <p>Lorem Lorem </p>
+                    </th>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem : Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem 'Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem , Lorem Lorem Lorem 'Lorem Lorem , Lorem Lorem Lorem Lorem Lorem .</p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem /Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem : Lorem -Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem Lorem , Lorem Lorem Lorem , Lorem Lorem , Lorem Lorem Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem :Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem (Lorem Lorem Lorem /Lorem , Lorem = Lorem Lorem ) Lorem Lorem ,</p>
+                        <p>Lorem Lorem , Lorem Lorem , Lorem Lorem . Lorem Lorem +Lorem % Lorem Lorem ; +Lorem % Lorem Lorem Lorem Lorem Lorem ; Lorem % Lorem , +Lorem % Lorem Lorem . Lorem Lorem </p>
+                        <p>Lorem Lorem (Lorem Lorem Lorem ) Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem .</p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem : Lorem Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem % Lorem Lorem Lorem Lorem Lorem Lorem % Lorem .</p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem : Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem -Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="article-part article-heading article-Steps_planned_h3">
+        <h3 id="H5953595">Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem -Lorem </h3>
+    </div>
+    <div class="article-part article-richtext article-Steps_planned">
+        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem :</p>
+        <ol>
+            <li>
+                <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem .</p>
+            </li>
+            <li>
+                <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem /Lorem Lorem Lorem Lorem Lorem Lorem , Lorem , Lorem , Lorem Lorem Lorem .</p>
+            </li>
+            <li>
+                <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ' Lorem Lorem Lorem .</p>
+            </li>
+            <li>
+                <p>Lorem -Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ,Lorem Lorem Lorem .</p>
+            </li>
+            <li>
+                <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+            </li>
+            <li>
+                <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem (Lorem , Lorem ).</p>
+            </li>
+        </ol>
+    </div>
+    <div class="article-part article-heading article-Risks_and_opportunities_h3">
+        <h3 id="H9798772">Lorem Lorem Lorem </h3>
+    </div>
+
+    <div class="article-part article-heading article-3_Implementation_h1">
+        <h1 id="H3361280">Lorem Lorem </h1>
+    </div>
+    <div class="article-part article-table article-Team_table">
+        <table data-width="100" data-aligned="center" data-layout="fixed" class="table-100 table-center table-fixed">
+            <tbody>
+                <tr>
+                    <th style="width:15%;">
+                        <p>Lorem Lorem </p>
+                    </th>
+                    <th style="width:15%;">
+                        <p></p>
+                    </th>
+                    <th style="width:70%;">
+                        <p>Lorem / Lorem Lorem </p>
+                    </th>
+                </tr>
+                <tr>
+                    <th style="width:15%;" rowspan="4">
+                        <p>Lorem </p>
+                    </th>
+                    <td style="width:15%;" data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td style="width:70%;" data-color="" data-align="" class="cell- cell-" >
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem (Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ). Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem .</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:15%;">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" style="width:70%;">
+                        <p>Lorem è Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem ’Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem  </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:15%;">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" style="width:70%;">
+                        <p> Lorem è Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem ’Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem ‘Lorem Lorem Lorem ’ Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:15%;">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" style="width:70%;">
+                        <p></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="article-part article-richtext article-Team_table_additional_rows article-deleted">
+        <table data-width="100" data-aligned="center" data-layout="fixed" class="table-100 table-center table-fixed">
+            <tbody>
+                <tr>
+                    <th style="width:15%;" rowspan="4">
+                        <p>Lorem r1</p>
+                    </th>
+                    <td style="width:15%;" data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem 'Lorem </p>
+                    </td>
+                    <td style="width:70%;" data-color="" data-align="" class="cell- cell-" >
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem , Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem </p>                       
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:15%;" >
+                        <p>Lorem r2c2</p>
+                    </td>
+                    <td style="width:70%;" data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem , Lorem -Lorem &amp; Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                         <p>Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem . Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width:15%;">
+                        <p>Lorem Lorem </p>
+                    </th>
+                    <td style="width:70%;" data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width:15%;">
+                        <p>Lorem </p>
+                    </th>
+                    <td style="width:70%;" data-color="" data-align="" class="cell- cell-"></td>
+                </tr>
+                <tr>
+                    <th style="width:15%;">
+                        <p>Lorem r1</p>
+                    </th>
+                    <td style="width:15%;" data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem 'Lorem </p>
+                    </td>
+                    <td style="width:70%;" data-color="" data-align="" class="cell- cell-" >
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem , Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem </p>                       
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <table data-width="100" data-aligned="center" data-layout="fixed" class="table-100 table-center table-fixed">
+            <tbody>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" rowspan="4">
+                        <p>Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem -Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem (Lorem ),</p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem -Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem .</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>-</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table data-width="100" data-aligned="center" data-layout="fixed" class="table-100 table-center table-fixed">
+            <tbody>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" rowspan="4">
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ’ Lorem Lorem Lorem Lorem .</p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem &amp;Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem .</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem &amp;Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>-</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table data-width="100" data-aligned="center" data-layout="fixed" class="table-100 table-center table-fixed">
+            <tbody>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" rowspan="4">
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem , Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem . Lorem ’Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>-</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table data-width="100" data-aligned="center" data-layout="fixed" class="table-100 table-center table-fixed">
+            <tbody>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" rowspan="4">
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem . Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem , Lorem ’Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem + Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem .</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>-</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table data-width="100" data-aligned="center" data-layout="fixed" class="table-100 table-center table-fixed">
+            <tbody>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" rowspan="4">
+                        <p>Lorem Lorem Lorem Lorem .Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ,</p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem , Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>-</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table data-width="100" data-aligned="center" data-layout="fixed" class="table-100 table-center table-fixed">
+            <tbody>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" rowspan="4">
+                        <p>Lorem Lorem Lorem Lorem (Lorem ) Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem -Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem -Lorem -Lorem Lorem Lorem Lorem , Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem , Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>-</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-"></td>
+                </tr>
+            </tbody>
+        </table>
+        <table data-width="100" data-aligned="center" data-layout="fixed" class="table-100 table-center table-fixed">
+            <tbody>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem 'Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" rowspan="4">
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem , Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>-</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <p>Lorem </p>
+                    </th>
+                    <td data-color="" data-align="" class="cell- cell-"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="article-part article-table article-Work_package_table">
+        <table data-width="100" data-aligned="center" data-layout="fixed" class="table-100 table-center table-fixed">
+            <tbody>
+                <tr>
+                    <th>
+                        <p>Lorem Lorem (Lorem Lorem Lorem )</p>
+                    </th>
+                    <th>
+                        <p>Lorem Lorem </p>
+                    </th>
+                    <th>
+                        <p>Lorem Lorem </p>
+                    </th>
+                    <th>
+                        <p>Lorem (Lorem Lorem Lorem )</p>
+                    </th>
+                    <th>
+                        <p>Lorem (Lorem Lorem Lorem ) – Lorem Lorem </p>
+                    </th>
+                    <th>
+                        <p>Lorem Lorem </p>
+                    </th>
+                    <th>
+                        <p>Lorem Lorem </p>
+                    </th>
+                    <th>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                    </th>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem . Lorem Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem . Lorem Lorem Lorem Lorem Lorem -Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem . Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem . Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem . Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <hr>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="4">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="article-part article-table article-Work_package_description_table">
+        <table data-width="100" data-aligned="center" data-layout="auto" class="table-100 table-center table-auto">
+            <tbody>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="2">
+                        <p>Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="3">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="2">
+                        <p>Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="3">
+                        <p>Lorem Lorem Lorem Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="2">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="3">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="2">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="3">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="2">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="3">
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="2">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="justify" class="cell- cell-justify" colspan="5">
+                        <p>Lorem Lorem : Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem . Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem -Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem (Lorem .Lorem ., Lorem Lorem , Lorem Lorem , Lorem Lorem Lorem .). Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem -Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="justify" class="cell- cell-justify" colspan="5">
+                        <p>Lorem Lorem Lorem :</p>
+                        <p></p>
+                        <p>Lorem Lorem .Lorem Lorem Lorem Lorem Lorem Lorem (Lorem Lorem )</p>
+                        <p>Lorem Lorem Lorem Lorem 'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem &amp; Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem (Lorem Lorem Lorem Lorem Lorem Lorem Lorem ), Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem :</p>
+                        <ul>
+                            <li>
+                                <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem -Lorem -Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                            </li>
+                            <li>
+                                <p>Lorem Lorem Lorem Lorem (Lorem Lorem Lorem ) Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                            </li>
+                            <li>
+                                <p>Lorem Lorem Lorem Lorem (Lorem Lorem Lorem Lorem ) Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem 'Lorem Lorem , Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                                <p></p>
+                            </li>
+                        </ul>
+                        <p>Lorem Lorem .Lorem Lorem Lorem Lorem Lorem (Lorem Lorem )</p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem (Lorem .Lorem ., Lorem , Lorem , Lorem , Lorem , Lorem Lorem ). Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem -Lorem Lorem . Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem (Lorem , Lorem Lorem , Lorem .), Lorem Lorem (Lorem , Lorem , Lorem .) Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem , Lorem , Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem (Lorem ).</p>
+                        <p></p>
+                        <p>Lorem Lorem .Lorem Lorem Lorem Lorem (Lorem Lorem )</p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                        <p>Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem :</p>
+                        <ul>
+                            <li>
+                                <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem &amp; Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem &gt;Lorem % Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                            </li>
+                            <li>
+                                <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem &gt;Lorem % Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                            </li>
+                            <li>
+                                <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem 'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem (Lorem , Lorem , Lorem .) Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem &gt;Lorem % Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                            </li>
+                        </ul>
+                        <p>Lorem , Lorem Lorem Lorem Lorem (Lorem Lorem Lorem Lorem Lorem /Lorem )Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem , Lorem , Lorem , Lorem Lorem . Lorem , Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="5">
+                        <p>Lorem Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem (Lorem Lorem Lorem Lorem Lorem Lorem )</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem .Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="article-part article-richtext article-Additional_work_packages">
+        <p></p>
+        <table data-width="100" data-aligned="center" data-layout="auto" class="table-100 table-center table-auto">
+            <tbody>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="2">
+                        <p>Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="3">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="2">
+                        <p>Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="3">
+                        <p>Lorem Lorem Lorem Lorem Lorem -Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="2">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="3">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="2">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="3">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="2">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="3">
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="2">
+                        <p>Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="justify" class="cell- cell-justify" colspan="5">
+                        <p>Lorem Lorem : Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ,Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem -Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem (Lorem Lorem Lorem , Lorem , Lorem Lorem ), Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="justify" class="cell- cell-justify" colspan="5">
+                        <p>Lorem Lorem Lorem :</p>
+                        <p>Lorem Lorem .Lorem Lorem Lorem Lorem Lorem Lorem Lorem (Lorem Lorem )</p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ,Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem :</p>
+                        <ul>
+                            <li>
+                                <p>Lorem Lorem Lorem Lorem Lorem – Lorem Lorem Lorem Lorem 'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                            </li>
+                            <li>
+                                <p>Lorem Lorem Lorem Lorem – Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                            </li>
+                            <li>
+                                <p>Lorem Lorem Lorem Lorem – Lorem Lorem Lorem Lorem Lorem 'Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem 'Lorem Lorem Lorem "Lorem Lorem " Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                            </li>
+                        </ul>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem (Lorem ) Lorem Lorem Lorem , Lorem , Lorem Lorem , Lorem ., Lorem Lorem Lorem Lorem Lorem .</p>
+                        <p></p>
+                        <p>Lorem Lorem .Lorem Lorem Lorem Lorem Lorem Lorem Lorem (Lorem Lorem )</p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem /Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem :</p>
+                        <ul>
+                            <li>
+                                <p>Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                            </li>
+                            <li>
+                                <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem (Lorem Lorem Lorem Lorem Lorem Lorem Lorem ) Lorem Lorem Lorem (Lorem Lorem Lorem Lorem Lorem Lorem ) Lorem Lorem Lorem Lorem .</p>
+                            </li>
+                            <li>
+                                <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                            </li>
+                            <li>
+                                <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                            </li>
+                        </ul>
+                        <p></p>
+                        <p>Lorem Lorem .Lorem Lorem Lorem Lorem Lorem (Lorem Lorem )</p>
+                        <p>Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem , Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem . Lorem Lorem Lorem , Lorem -Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem 'Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem /Lorem Lorem Lorem Lorem . Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem .</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-" colspan="5">
+                        <p>Lorem Lorem Lorem </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem (Lorem Lorem Lorem Lorem Lorem Lorem )</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem .Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem Lorem Lorem , Lorem Lorem , Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-">
+                        <p>Lorem </p>
+                    </td>
+                    <td data-color="" data-align="" class="cell- cell-"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+</body>
+
+</html>

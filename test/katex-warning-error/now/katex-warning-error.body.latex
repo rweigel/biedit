@@ -1,0 +1,23 @@
+\begin{document}
+
+\section{Warnings}
+
+before $ԉ$ after
+
+$$ԉ$$
+
+\begin{equation}
+ԉ
+\end{equation}
+
+\section{Errors}
+
+before $\foo$ KaTeX parse error: Undefined control sequence: \foo at position 1: \̲f̲o̲o̲ after
+
+\begin{equation}<br>\foo<br>\end{equation} KaTeX parse error: Undefined control sequence: \foo at position 18: ...egin{equation}
+\̲f̲o̲o̲
+̲\end{equation}
+
+$$\foo$$ KaTeX parse error: Undefined control sequence: \foo at position 1: \̲f̲o̲o̲
+
+\end{document}

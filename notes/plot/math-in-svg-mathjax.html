@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+     <style>
+     mjx-container[display="true"] {
+         margin: 0 0 ! important
+     }
+      body {
+        margin: 0px;
+        background-size: 5px 5px;
+        background-image:
+          linear-gradient(to right, grey .5px, transparent .5px),
+          linear-gradient(to bottom, grey .5px, transparent .5px);
+      }
+     </style>
+    <title>MathJax in SVG diagram</title>
+    <script
+      src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  </head>
+  <body>
+
+  <div style="display:block">
+  <svg id="plot" xmlns="http://www.w3.org/2000/svg" version="1.1" width="100" height="100">
+    <circle cx="50" cy="50" r="50"  opacity="0.1" fill="yellow" stroke="red" />
+    <circle cx="50" cy="50" r="2" fill="black" />
+  </svg>
+  </div>
+  <br>
+  <div id="mathcentered" style="display: inline-block;border:.1px solid blue" xmlns="http://www.w3.org/1999/xhtml">
+  </div>
+  </body>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <script>
+    var xnode;
+    function convert() {
+
+      output = document.getElementById('mathcentered');
+      output.innerHTML = '';
+      //
+      //  Reset the tex labels (and automatic equation numbers, though there aren't any here).
+      //  Get the conversion options (metrics and display settings)
+      //  Convert the input to SVG output and use a promise to wait for it to be ready
+      //    (in case an extension needs to be loaded dynamically).
+      //
+      MathJax.texReset();
+      var options = MathJax.getMetricsFor(output);
+      options.em = 12;
+      options.ex = 6;
+      console.log(options)
+      MathJax.tex2svgPromise('\\displaystyle{x+1\\over y-1}', options)
+        .then(function (node) {
+          //  The promise returns the typeset node, which we add to the output
+          //  Then update the document to include the adjusted CSS for the
+          //  content of the new equation.
+          output.appendChild(node);
+          //$('svg')[0].append($(node).find('svg')[0])
+          //MathJax.startup.document.clear();
+          MathJax.startup.document.updateDocument();
+        })
+        .catch(function (err) {
+        })
+        .then(function () {
+          
+          $('mjx-container').attr('margin','0');
+          var width = $("#mathcentered svg").width()
+          var height = $("#mathcentered svg").height()
+          console.log(width, height)
+          let elem = document.getElementById('mathcentered');
+          let rect = elem.getBoundingClientRect();
+          $('#mathcentered svg').attr('id','svgmath')
+          $('#plot').append($('#mathcentered svg'));
+          $('#svgmath').css('border','1px solid blue')
+          $("#svgmath").attr('x',50-width/2);
+          $("#svgmath").attr('y',50-height/2);
+      });
+    }
+    var node = $(MathJax.tex2svg(String.raw`\displaystyle{x+1\over y-1}`)).find('svg')[0];
+    $(node).attr('id','svgmath')
+    $('#plot').append(node)
+    let elem = document.getElementById('svgmath');
+    let rect = elem.getBoundingClientRect();
+    $("#svgmath").attr('x',50-rect.width/2);
+    $("#svgmath").attr('y',50-rect.height/2);
+    //$("#svgmath").attr('transform','translate(50,50)')
+    //console.log(node)
+    //convert();
+  </script>
+</html>

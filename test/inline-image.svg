@@ -1,0 +1,8 @@
+<svg  xmlns="http://www.w3.org/2000/svg" height="102" width="102">
+  <line x1="0"   y1="1"   x2="101" y2="1"   stroke="black" />
+  <line x1="0"   y1="51"  x2="101" y2="51"  stroke="black" />
+  <line x1="0"   y1="101" x2="101" y2="101" stroke="black" />
+  <line x1="0"   y1="1"   x2="0"   y2="101" stroke="black" />
+  <line x1="51"  y1="1"   x2="51"  y2="101" stroke="black" />
+  <line x1="101" y1="1"  x2="101"  y2="101" stroke="black" />
+</svg>

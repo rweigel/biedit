@@ -1,0 +1,17 @@
+\begin{document}
+
+\section{Full}
+
+\ifsolutions
+true
+\else
+false
+\fi
+
+\section{\texttt{if} only}
+
+\ifsolutions
+true
+\fi
+
+\end{document}

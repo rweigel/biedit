@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script
+    src="/.biedit/deps/vkthread.js">
+    </script>
+    <script src="jsdom.js"/>
+    
+    <script>
+        const dom = new JSDOM(
+          `<p>Hello
+            <img src="foo.jpg">
+          </p>`,
+          { includeNodeLocations: true }
+        );
+
+        const document = dom.window.document;
+        const bodyEl = document.body; // implicitly created
+        const pEl = document.querySelector("p");
+        const textNode = pEl.firstChild;
+        const imgEl = document.querySelector("img");
+
+        console.log(dom.nodeLocation(bodyEl));   // null; it's not in the source
+        console.log(dom.nodeLocation(pEl));      // { startOffset: 0, endOffset: 39, startTag: ..., endTag: ... }
+        console.log(dom.nodeLocation(textNode)); // { startOffset: 3, endOffset: 13 }
+
+      /* create an object, which you pass to vkThread as an argument*/
+      function removeEditorTags(html, cb) {
+        var params = {fn: _finalHTML, args: [html, rmEditorTags]};
+
+        /* run thread */
+        // https://github.com/vkiryukhin/vkthread
+        vkthread.exec(params).then(
+           function (data) {
+              console.log(data);
+              cb(data);
+            },
+            function(err) {
+                alert(err);
+            }
+        );
+      }
+    </script>
+</head>
+<body>
+    <p>
+        Paragraph.
+    </p>
+</body>

@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<body style="background-color:#fff0ff">
+
+
+  <div id="sine_wave" style="width:50vh;height:50vh;border: 1px solid blue;">
+    <svg
+     style="display:block;border: 1px solid black;background-color:#fff"
+     id="svg" xmlns="http://www.w3.org/2000/svg">
+    </svg>
+  </div>
+  <script type="text/javascript" src="plot2.js"></script>
+  <script>
+
+    setCanvasSize(500, 500)
+    // plot(x, y, opts)
+    var opts = {doEqualizeAxes: true, doDrawAxes: true}
+    drawFn(-0.1, 3.14, -1, 1, opts, function (x) {
+      return Math.sin(2*x)
+    })
+
+  </script>
+</body>
+</html>
