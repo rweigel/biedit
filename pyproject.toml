@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "biedit"
+version = "0.0.2"
+requires-python = ">=3.4"
+dependencies = [
+    "playwright",
+    "psutil",
+]
+
+[project.scripts]
+biedit = "biedit._main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+biedit = ["index.html", ".biedit/**/*"]

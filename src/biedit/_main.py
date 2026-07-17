@@ -1,13 +1,13 @@
-#!/usr/bin/env python3
-
 desc = """
-BiEdit v0.0.1 
+BiEdit v0.0.2
 
     List server options and usage:
-        ./biedit -h
+
+        biedit -h
 
     List conversion options and usage:
-        ./biedit convert -h
+
+        biedit convert -h
 """
 
 import os
@@ -20,18 +20,25 @@ import webbrowser
 
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
-from http.server import HTTPServer, SimpleHTTPRequestHandler 
+from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 import asyncio
 _event_loop = asyncio.new_event_loop()
 asyncio.set_event_loop(_event_loop)
 async_run = _event_loop.run_until_complete
 
+# Directory containing this file — used to locate index.html and .biedit/ assets
+_APP_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Module-level globals set by main() and referenced by server classes
+options = None
+html2pdf = None
+
+
 def commandline():
 
   default_port = 8090
-  app_dir = os.path.dirname(os.path.abspath(__file__))
-
+  app_dir = _APP_DIR
 
   outformats = {
     'pdf': '.pdf',
@@ -109,8 +116,8 @@ def commandline():
 
     options['port'] = default_port
     options['open'] = False
-    options['dir'] = os.path.dirname(os.path.abspath(options['infile']))
-    options['app'] = os.getcwd()
+    options['dir'] = os.path.dirname(options['infile'])
+    options['app'] = app_dir
     options['no_html'] = True
     options['convert'] = True
     if options['help']:
@@ -124,7 +131,7 @@ def commandline():
                       action='store_true',
                       help='Show this help message and exit')
     parsers.add_option("-l", "--loglevel",
-                      help="Log level " + "(error, default, debug) [%s]" % "defaut",
+                      help="Log level " + "(error, default, debug) [%s]" % "default",
                       default="default")
     parsers.add_option('-o', '--open',
                       action='store_true',
@@ -152,13 +159,22 @@ def commandline():
                       help="Do not save file.pdf when file.md saved.",
                       default=True)
     parsers.add_option("-a", "--app",
-                      help="Application location " + \
-                           "[%s]".format(app_dir),
+                      help="Application location [%s]" % app_dir,
                       default=app_dir)
 
     (options, args) = parsers.parse_args()
     options = vars(options)
     options['convert'] = False
+
+    # Positional argument: biedit [file.md]
+    positional = [a for a in args if not a.startswith('-')]
+    if positional:
+      filepath = os.path.abspath(positional[0])
+      options['dir'] = os.path.dirname(filepath)
+      options['file'] = os.path.basename(filepath)
+      options['open'] = True
+    else:
+      options['file'] = ''
 
     if options['help']:
       print(desc)
@@ -179,24 +195,23 @@ def commandline():
 
 
 def set_signals():
-  # https://github.com/miyakogi/pyppeteer/issues/61#issuecomment-379781534
   import signal, psutil, os
 
   def kill_child_processes(parent_pid, sig=signal.SIGTERM):
     try:
-        parent = psutil.Process(parent_pid)
+      parent = psutil.Process(parent_pid)
     except psutil.NoSuchProcess:
-        return
+      return
     children = parent.children(recursive=True)
     if len(children) > 0:
-        print("")
+      print("")
     for process in children:
-        print("Killing process named '{}' with pid = {}" \
+      print("Killing process named '{}' with pid = {}" \
             .format(process.name(), process.pid))
-        try:
-            process.send_signal(sig)
-        except:
-            pass # Process was already killed.
+      try:
+        process.send_signal(sig)
+      except:
+        pass  # Process was already killed.
 
   def handler_stop_signals(signum, frame):
     kill_child_processes(os.getpid())
@@ -210,114 +225,110 @@ def check_deps():
   try:
     from playwright.async_api import async_playwright
   except ImportError:
-    print("Generating PDF requires the playwright package. " \
+    print("Generating PDF requires the playwright package. "
           + "Install it with: pip install playwright && playwright install chromium")
 
 
 class MD2HTML:
 
-    def __init__(self):
-      check_deps()
-      return None
+  def __init__(self):
+    check_deps()
+    return None
 
+  async def start(self):
+    from playwright.async_api import async_playwright
 
-    async def start(self):
-      from playwright.async_api import async_playwright
+    if hasattr(self, 'page'):
+      return
 
-      if hasattr(self, 'page'):
-        return
+    start = time.time()
+    self._playwright = await async_playwright().start()
+    self.browser = await self._playwright.chromium.launch(args=["--no-sandbox"], headless=True)
+    self.page = await self.browser.new_page()
+    self.page.on('console', lambda msg: print("Browser console: " + msg.text))
+    print('%.4fs: browser launch time' % (time.time() - start))
+
+    return self
+
+  async def write(self, infile, outfile, outformat):
+
+    url = "http://localhost:" + str(options['port'])
+    url = url + "/" + os.path.basename(infile) + "!#view=" + outformat
+
+    start = time.time()
+    print("Starting page.goto " + infile + "!#view=" + outformat)
+    await self.page.goto(url, wait_until="domcontentloaded")
+    print("%.4fs: Finished page.goto" % (time.time() - start))
+
+    start = time.time()
+    print("Starting page.reload()")
+    # TODO: reload only needed when hash changes (when multiple calls)
+    await self.page.reload()
+    print("%.4fs: Finished page.reload" % (time.time() - start))
+
+    # Screenshot needed b/c it forces DOM rendering to complete before
+    # evaluation call.
+    start = time.time()
+    outpng = outfile + '.png'
+    print("Starting page.screenshot. outpng = " + outpng)
+    await self.page.screenshot(path=outpng)
+    print("%.4fs: Finished page.screenshot" % (time.time() - start))
+
+    start = time.time()
+    outdata = await self.page.evaluate(f'''() => {{
+        return ace.edit("{outformat}").getValue()
+    }}''')
+    print(f"%.4fs: {outformat} generation time" % (time.time() - start))
+    with open(outfile, "w") as f:
+      f.write(outdata)
+
+  def convert(self, infile, outfile, outformat):
+
+    async def task(infiles, outfile, outformat):
 
       start = time.time()
-      self._playwright = await async_playwright().start()
-      self.browser = await self._playwright.chromium.launch(args=["--no-sandbox"], headless=True)
-      self.page = await self.browser.new_page()
-      print('%.4fs: browser launch time' % (time.time() - start))
+      await self.start()
 
-      return self
+      for outformat in options['outformat']:
+        outfmt_split = outformat.split("-")
+        if len(outfmt_split) == 1:
+          outext = outfmt_split[0]
+        else:
+          outext = ".".join(outfmt_split[1:]) + "." + outfmt_split[0]
 
-
-    async def write(self, infile, outfile, outformat):
-
-      self.page.on('console', lambda msg: print("Browser console: " + msg.text))
-
-      url = "http://localhost:" + str(options['port'])
-      url = url + "/" + os.path.basename(infile) + "!#view=" + outformat
-
-      start = time.time()
-      print("Starting page.goto " + infile + "!#view=" + outformat)
-      await self.page.goto(url, wait_until="domcontentloaded")
-      print("%.4fs: Finished page.goto" % (time.time() - start))
-
-      start = time.time()
-      print("Starting page.reload()")
-      # TODO: reload only needed when hash changes (when multiple calls)
-      await self.page.reload()
-      print("%.4fs: Finished page.reload" % (time.time() - start))
-
-      # Screenshot needed b/c it forces DOM rendering to complete before
-      # evaluation call.
-      start = time.time()
-      outpng = outfile + '.png'
-      print("Starting page.screenshot. outpng = " + outpng)
-      await self.page.screenshot(path=outpng)
-      print("%.4fs: Finished page.screenshot" % (time.time() - start))
-
-      start = time.time()
-      outdata = await self.page.evaluate(f'''() => {{
-          return ace.edit("{outformat}").getValue()
-      }}''')
-      print(f"%.4fs: {outformat} generation time" % (time.time() - start))
-      with open(outfile, "w") as f:
-        f.write(outdata)
-
-
-    def convert(self, infile, outfile, outformat):
-
-      async def task(infiles, outfile, outformat):
-
-        start = time.time()
-        await self.start()
-
-        for outformat in options['outformat']:
-          outfmt_split = outformat.split("-")
-          if len(outfmt_split) == 1:
-            outext = outfmt_split[0]
+        for infile in infiles:
+          if options['outfile'].endswith("/"):
+            filename, ext = os.path.splitext(infile)
+            filename = filename.split(os.sep)[-1]
+            outfile = options['outfile'] + filename + '.' + outext
           else:
-            outext = ".".join(outfmt_split[1:]) + "." + outfmt_split[0]
+            outfile = options['outfile'].rsplit('.', maxsplit=1)[0] + '.' + outext
 
-          for infile in infiles:
-            if options['outfile'].endswith("/"):
-              filename, ext = os.path.splitext(infile)
-              filename = filename.split(os.sep)[-1]
-              outfile = options['outfile'] + filename + '.' + outext
-            else:
-              outfile = options['outfile'].rsplit('.', maxsplit=1)[0] + '.' + outext
+          print("Converting: " + infile + " to " + outformat)
+          await self.write(infile, outfile, outformat)
+          print("Wrote: " + outfile)
 
-            print("Converting: " + infile + " to " + outformat)
-            await self.write(infile, outfile, outformat)
-            print("Wrote: " + outfile)
+      print("-------\n%.4fs: total time" % (time.time() - start))
+      await self.browser.close()
+      await self._playwright.stop()
 
-        print("-------\n%.4fs: total time" % (time.time() - start))
-        await self.browser.close()
-        await self._playwright.stop()
+    def run():
+      import glob
+      infiles = glob.glob(options['infile'])
+      if len(infiles) == 0:
+        print(f"glob.glob('{options['infile']}') returned no matches")
+        sys.exit(1)
 
-      def run():
-        import glob
-        infiles = glob.glob(options['infile'])
-        if len(infiles) == 0:
-          print(f"glob.glob('{options['infile']}') returned no matches")
-          sys.exit(1)
+      loop = asyncio.new_event_loop()
+      asyncio.set_event_loop(loop)
+      loop.run_until_complete(task(infiles, outfile, outformat))
+      loop.close()
+      from _thread import interrupt_main
+      interrupt_main()
 
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(task(infiles,outfile,outformat))
-        loop.close()
-        from _thread import interrupt_main
-        interrupt_main()
-
-      import threading
-      t = threading.Thread(target=run, daemon=True)
-      t.start()
+    import threading
+    t = threading.Thread(target=run, daemon=True)
+    t.start()
 
 
 class HTML2PDF:
@@ -334,157 +345,143 @@ class HTML2PDF:
 
     start = time.time()
     self._playwright = await async_playwright().start()
-    browser = await self._playwright.chromium.launch(args=["--no-sandbox"], headless=True)
-    self.page = await browser.new_page()
-    end = time.time()
-    print('Browser launch time: %.4f s' % (end - start))
+    self.browser = await self._playwright.chromium.launch(args=["--no-sandbox"], headless=True)
+    self.page = await self.browser.new_page()
+    self.page.on('console', lambda msg: print(msg.text))
+    print('Browser launch time: %.4f s' % (time.time() - start))
 
     return self
-
 
   async def convert(self, html, outfile):
     if not html.startswith("http"):
       html = Path(html).resolve()
       html = f"file:///{html}"
 
-    page_margins = {
-        "left": "0",
-        "right": "0",
-        "top": "0",
-        "bottom": "0"
-    }
     start = time.time()
-
-    self.page.on('console', lambda msg: print(msg.text))
 
     # waitUntil causes a fairly long delay but is needed for images
     # Doing a reload fixes problem of blank PDF (b/c rendering not complete)
-    # See also https://swizec.com/blog/how-to-wait-for-dom-elements-to-show-up-in-modern-browsers
-    # and https://stackoverflow.com/questions/15875128/is-there-element-rendered-event
-    # https://stackoverflow.com/questions/52497252/puppeteer-wait-until-page-is-completely-loaded
     print("Opening " + html)
     await self.page.goto(html)
     await self.page.emulate_media(media="print")
-    await self.page.reload() # Needed. See above about blank PDF.
+    await self.page.reload()  # Needed. See above about blank PDF.
     await self.page.pdf(
         path=outfile,
         margin={"top": "0", "right": "0", "bottom": "0", "left": "0"}
     )
     print("PDF generation time: %.4f s" % (time.time() - start))
-    print("PDF generation time: %.4f s" % (time.time() - start))
 
 
 def dirwalk(selected, outfmt='html'):
 
-    print("Creating options drop-down with '" + selected + "' selected.")
+  print("Creating options drop-down with '" + selected + "' selected.")
 
-    def json(selected):
-      base = os.path.abspath(os.getcwd())
-      json_list = []
-      for root, dirs, files in os.walk(base):
-        path = root.split(os.sep)
-        if len(path) == 1 and path[0] == '.':
-          continue
-        if '.git' in path:
-          continue
-
-        json_list.append({'title': path[-1], 'isSelectable': 'false', 'subs': []})
-        for file in files:
-          json_list[-1]['subs'].append({'title': file})
-      return json_list
-
-    if outfmt == 'json':
-        return json(selected)
-
+  def json(selected):
     base = os.path.abspath(os.getcwd())
-    Nb = len(base.split(os.sep)) # Number of blanks
-
-    html = '';
-    if selected == '':
-      html = '<option selected value="">File</option>'
-
+    json_list = []
     for root, dirs, files in os.walk(base):
-      dirs.sort()
-
       path = root.split(os.sep)
       if len(path) == 1 and path[0] == '.':
         continue
       if '.git' in path:
         continue
 
-      root = root.replace(base, "")
-      indent = 4*(len(path) - Nb)*'&nbsp;'
-      dir = root.split("/")[-1]
-      if dir == '':
-        dir = '.'
-      html = html + '<optgroup label="' + indent + dir + '">'
-      files.sort()
+      json_list.append({'title': path[-1], 'isSelectable': 'false', 'subs': []})
       for file in files:
-        if not (file.endswith(".md") or file.endswith(".css")):
-          continue
-        value = root + '/' + file
-        if selected.startswith(value[1:]):
-          start = '<option selected value="' + value[1:] + '">'
-        else:
-          start = '<option value="' + value[1:] + '">'
+        json_list[-1]['subs'].append({'title': file})
+    return json_list
 
-        end = '</option>'
-        #print((len(path) - Nb) * '&nbsp;' + file)
-        if indent == "":
-          html = html + start + file + end
-        else:
-          html = html + start + indent + '' + file + end
-      html = html + '</optgroup>'
+  if outfmt == 'json':
+    return json(selected)
 
-    return html
+  base = os.path.abspath(os.getcwd())
+  Nb = len(base.split(os.sep))  # Number of blanks
+
+  html = ''
+  if selected == '':
+    html = '<option selected value="">File</option>'
+
+  for root, dirs, files in os.walk(base):
+    dirs.sort()
+
+    path = root.split(os.sep)
+    if len(path) == 1 and path[0] == '.':
+      continue
+    if '.git' in path:
+      continue
+
+    root = root.replace(base, "")
+    indent = 4*(len(path) - Nb)*'&nbsp;'
+    dir = root.split("/")[-1]
+    if dir == '':
+      dir = '.'
+    html = html + '<optgroup label="' + indent + dir + '">'
+    files.sort()
+    for file in files:
+      if not (file.endswith(".md") or file.endswith(".css")):
+        continue
+      value = root + '/' + file
+      if selected.startswith(value[1:]):
+        start = '<option selected value="' + value[1:] + '">'
+      else:
+        start = '<option value="' + value[1:] + '">'
+
+      end = '</option>'
+      if indent == "":
+        html = html + start + file + end
+      else:
+        html = html + start + indent + '' + file + end
+    html = html + '</optgroup>'
+
+  return html
 
 
 def repository_info(url_cl):
-    import re
+  import re
 
-    gitPath = os.path.join(os.getcwd(),'.git')
+  gitPath = os.path.join(os.getcwd(), '.git')
 
-    def rm_credentials(url):
-        return re.sub(r'\/\/(.+@)', '//', url)
+  def rm_credentials(url):
+    return re.sub(r'\/\/(.+@)', '//', url)
 
-    def normalize(url):
-        return re.sub(r'\/$|\.git$|\.git\/', '', url)
+  def normalize(url):
+    return re.sub(r'\/$|\.git$|\.git\/', '', url)
 
-    credentials_cl = rm_credentials(url_cl) != url_cl
-    url = None 
-    credentials = False
-    if os.path.exists(gitPath):
-        configFile = os.path.join(gitPath,'config')
-        if configFile:
-            file1 = open(configFile, 'r')
-            lines = file1.readlines()
-            for line in lines:
-                line = line.strip()
-                if line.startswith('url = '):
-                    line = line.replace('url = ', '')
-                    credentials = True
-                    url = rm_credentials(line)
-                    if url == line:
-                        print('No credentials in URL in ./git/config. ' + \
-                              'Push from BiEdit will not be possible.')
+  credentials_cl = rm_credentials(url_cl) != url_cl
+  url = None
+  credentials = False
+  if os.path.exists(gitPath):
+    configFile = os.path.join(gitPath, 'config')
+    if configFile:
+      file1 = open(configFile, 'r')
+      lines = file1.readlines()
+      for line in lines:
+        line = line.strip()
+        if line.startswith('url = '):
+          line = line.replace('url = ', '')
+          credentials = True
+          url = rm_credentials(line)
+          if url == line:
+            print('No credentials in URL in ./git/config. '
+                  + 'Push from BiEdit will not be possible.')
 
-    if url and url_cl:
-        if normalize(url) != normalize(url_cl):
-            raise ValueError('Repository URL given on command line \n   ' \
-                                + url_cl \
-                                + '\ndoes not match URL in .git/config\n   ' \
-                                + url)
+  if url and url_cl:
+    if normalize(url) != normalize(url_cl):
+      raise ValueError('Repository URL given on command line \n   '
+                       + url_cl
+                       + '\ndoes not match URL in .git/config\n   '
+                       + url)
 
-
-    if url:
-        return {'url': normalize(rm_credentials(url)), 'credentials': credentials}
-    if url_cl:
-        return {'url': normalize(rm_credentials(url_cl)), 'credentials': credentials_cl}
+  if url:
+    return {'url': normalize(rm_credentials(url)), 'credentials': credentials}
+  if url_cl:
+    return {'url': normalize(rm_credentials(url_cl)), 'credentials': credentials_cl}
 
 
 def convert():
   md2html = MD2HTML()
   md2html.convert(options['infile'], options['outfile'], options['outformat'])
+
 
 # https://stackoverflow.com/a/16838003
 class CallbackHTTPServer(HTTPServer):
@@ -501,16 +498,13 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
   def log_message(self, format, *args):
     if options["loglevel"] == "debug":
       print("%s - - [%s] %s" % \
-        (self.client_address[0], self.log_date_time_string(), format%args))
+            (self.client_address[0], self.log_date_time_string(), format % args))
 
   def end_headers(self):
     # Overrides default end_headers().
-    # This will not delete the default Content-Type header
-    # of 'application/octet-stream' that appears for these two cases,
-    # but it seems clients use the last Content-Type in the header.
     if self.path.endswith('.md'):
       self.send_header("Content-type", "text/markdown; charset=utf-8")
-    if not "." in os.path.basename(self.path):
+    if "." not in os.path.basename(self.path):
       self.send_header("Content-type", "text/html; charset=utf-8")
     SimpleHTTPRequestHandler.end_headers(self)
 
@@ -538,7 +532,7 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
       # remove leading / and trailing !
       initialFile = URL.path[1:-1]
       if URL.path == '/':
-        initialFile == ''
+        initialFile = ''
 
       self.send_response(200)
       self.send_header("Content-type", "text/html; charset=utf-8")
@@ -550,25 +544,20 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
 
       initialFile = initialFile.split(os.sep)[-1]
 
-      # TODO: Fetch index.html from repository if not found.
       index = os.path.join(options['app'], 'index.html')
-      # TODO: Instead of replacements, create dict and
-      # convert to JSON. Then insert.
       with open(index, "rt") as fin:
         data = fin.read()
         print(f"Sending {index} with initialFile = '{initialFile}'")
-        data = data.replace("${files}", dirwalk(URL.path[1:-1])) 
+        data = data.replace("${files}", dirwalk(URL.path[1:-1]))
         orig = "initialFile: 'index.md'"
         repl = f"initialFile: '{initialFile}'"
         data = data.replace(orig, repl)
 
       if options['no_html'] == True:
-        data = data.replace("noHTML: false", "noHTML: true") 
+        data = data.replace("noHTML: false", "noHTML: true")
 
       if not os.path.exists(".sourcedir"):
-        # print("Did not find .sourcedir")
-        # Allow creation of file named index.md
-        data = data.replace("allowIndexMD: false", "allowIndexMD: true") 
+        data = data.replace("allowIndexMD: false", "allowIndexMD: true")
 
       self.wfile.write(bytes(data, 'utf-8'))
     else:
@@ -592,7 +581,6 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
 
     # Remove leading slash
     file_save = self.path[1:]
-    #print("self.path = " + file_save)
 
     if 'command' in post:
 
@@ -600,7 +588,7 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
         file_base = os.path.splitext(file_save)[0]
         cmd = 'git add ' + file_base + "*"
         cmd = cmd + "; git commit " + file_base + "*" \
-                  + " -m '" + post['message'] + "'; echo Done"
+              + " -m '" + post['message'] + "'; echo Done"
       elif post['command'] == 'push':
         repository = repository_info(options['remote'])
         if not repository['credentials']:
@@ -621,7 +609,7 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
 
       print("Executing " + cmd)
       stream = subprocess.Popen(cmd, shell=True,
-                  stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
       while True:
         line = stream.stdout.readline()
         print(line.decode().rstrip())
@@ -657,14 +645,6 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
         with open(file_base + '.html', 'w') as fh:
           fh.write(post['html'])
 
-        if False:
-          if not os.path.exists(file_base) and options['symlink']:
-            print("Symlinking " 
-                    + os.path.join(options['dir'], file_base + '.html') 
-                    + " to " + file_base)
-            base = os.path.basename(file_base)
-            os.symlink(base + '.html', file_base)
-
       self.send_response(200)
       self.send_header('Content-type', 'text/html; charset=utf-8')
       self.end_headers()
@@ -678,68 +658,42 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
       self.wfile.write(bytes("Nothing to do.\n", 'utf-8'))
 
 
-mypath = os.getcwd()
-for f in os.listdir(mypath):
-  if f.endswith(".md") and f.lower() == "index.md":
-    index = f
-  if f.endswith(".md") and f.lower() == "readme.md":
-    readme = f
+def main():
+  global options, html2pdf
 
-# TODO: Wrap HTTPRequestHandler in function so that
-#       options and html2pdf do not need to be global variables.
-options = commandline()
-html2pdf = HTML2PDF()
+  options = commandline()
+  html2pdf = HTML2PDF()
 
-#if options['outformat'] == 'pdf':
-  #print('Generating ' + pdf_file)
-  #async_run(html2pdf.start())
-  #async_run(html2pdf.convert(html_file, pdf_file))
-  #print('Generated ' + pdf_file)
+  set_signals()
 
-set_signals()
+  os.chdir(options['dir'])
 
-os.chdir(options['dir'])
-
-for port in range(options['port'], options['port'] + 10):
-  try:
-    options['port'] = port
-    server = CallbackHTTPServer(('', port), HTTPRequestHandler)
-    url = "http://localhost:" + str(port)
-    if options['convert'] == False:
-      print("Edit files in " + options['dir'] \
-          + " at http://localhost:%d/" % port)
-    if options['open']:
-      webbrowser.open_new(url)
-    else:
-      if options['convert'] == False:
+  for port in range(options['port'], options['port'] + 10):
+    try:
+      options['port'] = port
+      server = CallbackHTTPServer(('', port), HTTPRequestHandler)
+      url = "http://localhost:" + str(port)
+      if options.get('file'):
+        open_url = url + "/" + options['file'] + "!"
+      else:
+        open_url = url
+      if not options['convert']:
+        print("Edit files in " + options['dir']
+              + " at http://localhost:%d/" % port)
+      if options['open']:
+        webbrowser.open_new(open_url)
+      elif not options['convert']:
         print("Use the -o option to open page automatically.")
-    server.serve_forever()
-  except OSError as err:
-    print("Could not start BiEdit on port " \
-          + str(port) \
-          + ". Trying a different port.")
+      server.serve_forever()
+    except OSError:
+      print("Could not start BiEdit on port "
+            + str(port) + ". Trying a different port.")
 
-raise OSError("Could not find an open port. Tried " \
-            + str(options['port']) + "-" + str(options['port'] + 9) \
-            + ". Specify a different port using the --port" \
-            + " command line argument.")
+  raise OSError("Could not find an open port. Tried "
+                + str(options['port']) + "-" + str(options['port'] + 9)
+                + ". Specify a different port using the --port"
+                + " command line argument.")
 
-if False:
-  import logging
-  from watchdog.observers import Observer
-  from watchdog.events import LoggingEventHandler
 
-  logging.basicConfig(level=logging.INFO,
-                      format='%(asctime)s - %(message)s',
-                      datefmt='%Y-%m-%d %H:%M:%S')
-  path = sys.argv[1] if len(sys.argv) > 1 else '.'
-  event_handler = LoggingEventHandler()
-  observer = Observer()
-  observer.schedule(event_handler, path, recursive=True)
-  observer.start()
-  try:
-    while True:
-      time.sleep(1)
-  finally:
-    observer.stop()
-    observer.join()
+if __name__ == "__main__":
+  main()
