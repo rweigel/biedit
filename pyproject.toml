@@ -15,7 +15,7 @@ dependencies = [
 biedit = "biedit._main:main"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
 
 [tool.setuptools.package-data]
-biedit = ["index.html", ".biedit/**/*"]
+biedit = ["index.html", "ui/**/*"]
