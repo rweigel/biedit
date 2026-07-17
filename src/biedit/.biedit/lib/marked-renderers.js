@@ -159,8 +159,12 @@ renderer.heading = (text, level, c, _slug, token) => {
 
   util.log("Setting .hnumber to '" + number2 + "'",'renderHeading',1);
   util.log("Setting .htext to '" + text + "'",'renderHeading',1);
+  // Strip inner <a> tags to avoid nesting inside the hanchor <a>.
+  // Nested <a> elements are invalid HTML; browsers restructure the DOM in a
+  // way that empties .htext, breaking the TOC.
+  let htextContent = text.replace(/<a\b[^>]*>([\s\S]*?)<\/a>/gi, '$1');
   var hLink = 
-    `<a name="${slugText}" number="${number}" lo=${token.lineStart} raw="${raw}" class="anchor hanchor" href="#${slugText}"><span class="hnumber">${number2}</span>&nbsp;<span class="htext">${text}</span></a>`;
+    `<a name="${slugText}" number="${number}" lo=${token.lineStart} raw="${raw}" class="anchor hanchor" href="#${slugText}"><span class="hnumber">${number2}</span>&nbsp;<span class="htext">${htextContent}</span></a>`;
 
   if (false && app['TOC']['markdown']['show'] && app['TOC']['markdown']['style'].startsWith("numbered-custom")) {
     // Remove number
