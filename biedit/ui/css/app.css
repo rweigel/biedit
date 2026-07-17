@@ -1,0 +1,309 @@
+html, body {
+  height: calc(100% - 8px);
+  margin: 4px;
+  border: 1px solid black;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  background-color: white;
+}
+
+  #wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    background-color: rgb(240,240,240);
+  }
+
+    #header {
+      flex: 0 0 auto;
+
+      background-color: white;
+      border: 1px solid black;
+      text-align: center;
+      font-family: Times;
+      height: 1.3em;
+    }
+
+    #content {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      flex-direction: row;
+    }
+
+      #left {
+        overflow-x: hidden;
+        overflow-y: hidden;
+
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+      }
+
+        #left-header {
+          flex: 0 0 auto;
+          margin-right: 0.25em;
+          display: flex;
+          align-items: center;
+        }
+
+          #status {
+            margin-left: 5px;
+            zoom:70%;
+          }
+
+          #md-toc-checkbox {
+            zoom:70%;
+            float:right;
+          }
+
+        #left-content {
+          overflow-x: hidden;
+          overflow-y: hidden;
+
+          display: flex;
+          flex-direction: row;
+        }
+
+          /*
+          #editor-toc {
+            flex: 1;
+            flex-basis: 20%;
+            overflow-x: hidden;
+            overflow-y: auto;
+          }
+          */
+
+          #editor {
+            flex: 1;
+            flex-basis: 80%;
+            overflow-x: hidden;
+            overflow-y: auto;
+
+            font-size: 1em;
+            font-family: "Source Code Pro", "Consolas", "Monaco", "Courier New", monospace;
+
+          }
+
+        #left-footer {
+          flex: 0 0 auto;
+          height: 1em;
+        }
+
+      #drag {
+        flex: 0 0 auto;
+        cursor: col-resize;
+        margin-left: 1px;
+        margin-right: 1px;
+        background: black;
+        box-shadow: 0px 0px 2px 2px rgba(0, 0, 0, 0.2);
+        width: 2px;
+      }
+
+      #right {
+        overflow-x: hidden;
+        overflow-y: hidden;
+
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+        #right-header {
+          flex: 0 0 auto;
+          margin-right: 0.25em;
+          align-items: center;
+
+          display: flex;
+          flex-direction: row;
+        }
+
+          #view-options {
+          }
+
+          #zoom-right-input {
+            height: 1em;
+            width: 5em;
+          }
+
+          #linenumbers-checkbox-wrapper {
+            zoom: 80%;
+          } 
+
+          #solutions-checkbox-wrapper {
+            zoom:80%;
+          }
+
+          #pdf-status {
+            flex: 1 1 auto;
+            margin-left: 0.25em;
+            zoom:80%;
+          }
+
+          #timing {
+            font-family: monospace;
+            zoom: 70%;
+          }
+
+        #right-content {
+          flex: 1;
+          overflow-x: hidden;
+          overflow-y: hidden;
+
+          display: flex;
+          flex-direction: row;
+        }
+
+          #html-rendered {
+            flex: 1;
+            overflow-x: hidden;
+            overflow-y: hidden;
+
+            display: flex;
+            flex-direction: row;
+            background-image: url("/ui/img/paper.png");
+          }
+
+          #html-tagged-body-raw {
+            flex: 1;
+            display: none;
+          }
+
+          #html-tagged-body {
+            flex: 1;
+            display: none;
+          }
+
+          #html-tagged {
+            flex: 1;
+            display: none;
+          }
+
+          #html {
+            flex: 1;
+            display: none;
+          }
+
+          #html-body {
+            flex: 1;
+            display: none;
+          }
+
+          #latex {
+            flex: 1;
+            display: none;
+          }
+
+          #latex-body {
+            flex: 1;
+            display: none;
+          }
+
+          #pdf {
+            flex: 1;
+            display: none;
+          }
+
+          #pdf-preview {
+            flex: 1;
+            display: none;
+          }
+
+        #right-footer {
+          flex: 0 0 auto;
+        }
+
+    .footer {
+      flex: 3;
+      flex: 0 0 auto;
+      border: 1px solid black;
+    }
+
+/*
+#pdf-preview, #html, #html-raw, #md-reference {
+  display: none;
+  order: 2;
+  flex: 1 1 auto;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-content: stretch;
+  align-items: flex-start;
+  overflow: hidden;
+  max-height: 100%;
+  min-height: 100%;
+  height: 100%;
+  width: 100%;
+  border: 1px solid black;
+}
+*/
+
+#markdownTOCUpdate {
+  display: none;
+  padding-bottom: 0;
+  padding-top: 0;
+  height: 1.35em;
+}
+
+/* Highlight color of active section in body */
+#display .highlighted {
+  background-color: yellow;
+}
+
+#display .active {
+  background: yellow;
+}
+
+#toc .highlighted {
+  background-color: yellow;
+}
+
+.emacs-mode .ace_cursor {
+  animation: none !important;
+  /* border: 1px yellow solid !important;*/
+  background-color: rgba(0,250,0,0.9) !important;
+}
+
+.ace_gutter-active-line {
+}
+.ace_active-line {
+}
+
+.ace_line_group.active {
+  /* This border causes mis-alignment and jumps in
+     size when moving off or on. Fixing this does not
+     seem straightforward.
+  */
+  border: 0.25px solid yellow;
+}
+
+#xconsole-close {
+  cursor: pointer;
+}
+#xconsole-keepopen {
+  cursor: pointer;
+}
+
+#xconsole pre {
+  border: 1px solid black;
+  padding: 1em;
+  margin: 1em;
+  bottom: 0;
+  max-height: 80vh;
+  overflow: scroll;
+  background-color: white;
+  white-space: pre-wrap;
+  word-break: keep-all;
+}
+
+a.broken-internal-link {
+  background-color: red;
+  text-decoration-line: none !important; /* To over-ride in doc.css */
+}
+
+.block .error {
+  color: red;
+}
