@@ -541,6 +541,33 @@ function preprocessMD(text) {
 
     //util.toc(startTime, "for \\\\ modifications(s).");
   }
+
+  if (true) {
+    // Protect LaTeX backslash sequences inside $$ and $ math blocks that
+    // marked would strip as escape sequences (e.g. \; \: \, \! \. \| \- \[ \]).
+    // This must run AFTER the \\ -> \\\\ step above so that genuine double
+    // backslashes have already been doubled and won't be re-processed here.
+    // We double any remaining single \X (where X is in marked's escape set)
+    // so that marked outputs \X rather than just X.
+    //
+    // Marked's escape set: !"#$%&'()*+,-./:;<=>?@[\]^_{|}~
+    // LaTeX sequences affected: \; \: \, \! \. \- \| \[ \] etc.
+    const markedEscapeRe = /\\([!"#$%&'()*+,\-./:;<=>?@\[\]^{|}~])/g;
+    const protect = (inner) => inner.replace(markedEscapeRe, '\\\\$1');
+
+    // Block equations: $$ ... $$
+    text = text.replace(/\$\$([\s\S]*?)\$\$/g, (match, inner) => {
+      return '$$' + protect(inner) + '$$';
+    });
+
+    // Inline equations: $ ... $ (not $$)
+    text = text.replace(/\$([^\$\n]+?)\$/g, (match, inner) => {
+      return '$' + protect(inner) + '$';
+    });
+
+    util.log("After math backslash protection:\n" + text,'mdPreprocess',1);
+  }
+
   util.log("After preprocessing:\n" + text,'mdPreprocess',1);
   util.toc(startTime0,'to preprocess markdown');
 

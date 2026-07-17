@@ -1,15 +1,3 @@
-desc = """
-BiEdit v0.0.2
-
-    List server options and usage:
-
-        biedit -h
-
-    List conversion options and usage:
-
-        biedit convert -h
-"""
-
 import os
 import sys
 import json
@@ -26,6 +14,18 @@ import asyncio
 _event_loop = asyncio.new_event_loop()
 asyncio.set_event_loop(_event_loop)
 async_run = _event_loop.run_until_complete
+
+desc = """
+BiEdit v0.0.2
+
+    List server options and usage:
+
+        biedit -h
+
+    List conversion options and usage:
+
+        biedit convert -h
+"""
 
 # Directory containing this file — used to locate index.html and .biedit/ assets
 _APP_DIR = os.path.dirname(os.path.abspath(__file__))
