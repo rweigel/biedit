@@ -8,7 +8,7 @@ does not need <body> to have a class of .body.
   min-width: 50%;
   max-height: 100%;
   position: absolute;
-  background-image: url("https://rweigel.github.io/biedit/img/paper.png");
+  background-image: url("https://rweigel.github.io/biedit/biedit/ui/img/paper.png");
 }
 
 #toc {

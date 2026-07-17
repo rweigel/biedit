@@ -159,7 +159,7 @@ app['documentBackground'] = 'cdn-link';
 // app['documentFavicon'] = 'data:image/x-icon;base64,...'
 app['documentFavicon'] = "📖";
 
-app['documentBackgroundImage'] = "https://rweigel.github.io/biedit/img/paper.png";
+app['documentBackgroundImage'] = "https://rweigel.github.io/biedit/biedit/ui/img/paper.png";
 
 // Allow edits of HTML. (Expect to be less replicable.)
 app['htmlEditable'] = false;
