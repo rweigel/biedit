@@ -4,7 +4,7 @@ import time
 import asyncio
 import logging
 
-from biedit.cli import format_map
+from biedit.cli import FORMAT_MAP
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +22,6 @@ class MD2HTML:
   def __init__(self, options):
     self.options = options
     check_deps()
-    return None
 
   async def start(self):
     from playwright.async_api import async_playwright
@@ -73,15 +72,15 @@ class MD2HTML:
       f.write(outdata)
 
 
-  def convert(self, infile, outfile, outformat):
+  def convert(self):
 
-    async def task(infiles, outfile, outformat):
+    async def task():
 
       start = time.time()
       await self.start()
 
       for outformat in self.options['out_format']:
-        ext = format_map[outformat]
+        ext = FORMAT_MAP[outformat]
 
         for infile in infiles:
           if self.options['out_file'].endswith('/'):
@@ -107,7 +106,7 @@ class MD2HTML:
 
       loop = asyncio.new_event_loop()
       asyncio.set_event_loop(loop)
-      loop.run_until_complete(task(infiles, outfile, outformat))
+      loop.run_until_complete(task())
       loop.close()
       from _thread import interrupt_main
       interrupt_main()
@@ -122,7 +121,6 @@ class HTML2PDF:
 
   def __init__(self):
     check_deps()
-    return None
 
   async def start(self):
     from playwright.async_api import async_playwright
@@ -164,4 +162,4 @@ class HTML2PDF:
 
 def convert(options):
   md2html = MD2HTML(options)
-  md2html.convert(options['in_file'], options['out_file'], options['out_format'])
+  md2html.convert()

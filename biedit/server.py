@@ -1,5 +1,6 @@
 import os
 import json
+import shlex
 import logging
 import subprocess
 
@@ -8,7 +9,7 @@ from urllib.parse import urlparse, parse_qs
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 from biedit.convert import convert
-from biedit.git import repository_info
+from biedit.git import _find_git_dir, push_url
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +31,7 @@ def dirwalk(selected):
     path = root.split(os.sep)
     if len(path) == 1 and path[0] == '.':
       continue
-    if '.git' in path:
+    if '.git' in path or any(p.startswith('.') for p in path[Nb:]):
       continue
 
     root = root.replace(base, "")
@@ -125,7 +126,7 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
 
       initialFile = initialFile.split(os.sep)[-1]
 
-      index = os.path.join(self.server.options['app'], 'index.html')
+      index = os.path.join(self.server.options['app'], 'ui', 'index.html')
       with open(index, "rt") as fin:
         data = fin.read()
         logger.debug(f"Sending {index} with initialFile = '{initialFile}'")
@@ -148,7 +149,7 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
         logger.info('Generating: ' + outfile + ' from ' + infile)
         self.server.async_run(self.server.html2pdf.start())
         self.server.async_run(self.server.html2pdf.convert(infile, outfile))
-        print('Generated: ' + outfile)
+        logger.info('Generated: ' + outfile)
 
       # File has been generated. Hand off request to default do_GET(),
       # which will respond with file.
@@ -172,18 +173,25 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
     if 'command' in post:
 
       if post['command'] == 'commit':
-        file_base = os.path.splitext(file_save)[0]
+        file_base = shlex.quote(os.path.splitext(file_save)[0])
+        message = shlex.quote(post['message'])
         cmd = 'git add ' + file_base + "*"
         cmd = cmd + "; git commit " + file_base + "*" \
-              + " -m '" + post['message'] + "'; echo Done"
+              + " -m " + message + "; echo Done"
       elif post['command'] == 'push':
-        repository = repository_info(self.server.options['remote'])
-        if not repository['credentials']:
-          msg = "Cannot push: server not configured with remote repository."
-          self.send_error(501, {"Error": msg})
+        if not _find_git_dir():
+          self.send_error(501, "Cannot push: no git repository found.")
           return
         else:
-          cmd = "git push " + self.server.options['remote'] + "; echo Done"
+          credentials = self.server.options['credentials']
+          if credentials:
+            target = push_url(credentials)
+            if target is None:
+              self.send_error(501, "Cannot push with --credentials: remote URL is not HTTPS.")
+              return
+          else:
+            target = ''
+          cmd = "git push " + target + "; echo Done"
       else:
         self.send_response(200)
         self.send_header('Content-type', 'text/html; charset=utf-8')

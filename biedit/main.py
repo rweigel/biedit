@@ -31,7 +31,7 @@ def set_signals():
             .format(process.name(), process.pid))
       try:
         process.send_signal(sig)
-      except:
+      except Exception:
         pass  # Process was already killed.
 
   def handler_stop_signals(signum, frame):
@@ -55,7 +55,8 @@ def main():
 
   os.chdir(options['dir'])
 
-  for port in range(options['port'], options['port'] + 10):
+  start_port = options['port']
+  for port in range(start_port, start_port + 10):
     try:
       options['port'] = port
       server = CallbackHTTPServer(('', port), HTTPRequestHandler, options, html2pdf, async_run)
@@ -77,7 +78,7 @@ def main():
                      + str(port) + '. Trying a different port.')
 
   raise OSError("Could not find an open port. Tried "
-                + str(options['port']) + "-" + str(options['port'] + 9)
+                + str(start_port) + "-" + str(start_port + 9)
                 + ". Specify a different port using the --port"
                 + " command line argument.")
 

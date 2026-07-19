@@ -18,4 +18,4 @@ biedit = "biedit.main:main"
 where = ["."]
 
 [tool.setuptools.package-data]
-biedit = ["index.html", "ui/**/*"]
+biedit = ["ui/**/*"]

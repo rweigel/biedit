@@ -9,13 +9,7 @@ logger = logging.getLogger(__name__)
 
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
-ALLOWED_FORMATS = [
-  'pdf', 'latex', 'latex-body',
-  'html', 'html-body',
-  'html-tagged-body-raw', 'html-tagged-body', 'html-tagged',
-]
-
-format_map = {
+FORMAT_MAP = {
     'pdf': '.pdf',
     'latex': '.tex',
     'latex-body': '.body.tex',
@@ -26,7 +20,7 @@ format_map = {
     'html-tagged': '.tagged.html',
 }
 
-ALLOWED_FORMATS = list(format_map.keys())
+ALLOWED_FORMATS = list(FORMAT_MAP.keys())
 
 
 desc = """
@@ -47,30 +41,29 @@ def cli():
   default_port = 8090
   allowed = ALLOWED_FORMATS
   allowed_str = '|'.join(allowed)
-  cusage = (f"\nbiedit convert <infile.md|'PATTERN'.md>\n"
-            f"\t [-o outfile.{{{allowed_str}}}]\n"
-            f"\tor\n"
-            f"\t [-f {{PATTERN|{allowed_str}}}]")
 
   parserc = optparse.OptionParser(add_help_option=False)
   parserc.add_option('-f', '--out-format', default=None,
                      help='One of ' + allowed_str)
-  ext_map = ', '.join(f'{f}: {e}' for f, e in format_map.items())
   parserc.add_option('-o', '--out-file', default=None,
-                     help='Output base name; extension set by -f (' + ext_map + '). '
+                     help='Output base name; extension determined by -f. '
                           'Trailing slash: use as output directory.')
   parserc.add_option('-i', '--in-file', help='Input file name')
   parserc.add_option('-h', '--help', dest='help', action='store_true',
                      help='Show this help message and exit')
   parserc.add_option('-l', '--log-level', default='default',
                      help='Log level (error, default, debug) [default]')
-  parserc.add_option('-d', '--dir', default=os.getcwd(),
-                     help='Repository directory [%s]' % os.getcwd())
+
+  cusage = "biedit convert <in-file.md|'PATTERN'.md> [options]\n" + parserc.format_option_help()
 
   if len(sys.argv) > 1 and sys.argv[1] == 'convert':
 
     options, args = parserc.parse_args()
     options = vars(options)
+
+    if options['help']:
+      print(cusage)
+      sys.exit(0)
 
     if options['in_file'] is None:
       if len(args) > 1:
@@ -107,15 +100,12 @@ def cli():
       'app': APP_DIR,
       'no_html': True,
       'convert': True,
+      'credentials': '',
     })
 
-    if options['help']:
-      parserc.set_usage(cusage)
-      parserc.print_help()
-      sys.exit(0)
-
   else:
-    parsers = optparse.OptionParser(add_help_option=False)
+    parsers = optparse.OptionParser(usage='biedit [file.md] [options]',
+                                    add_help_option=False)
     parsers.add_option('-h', '--help', dest='help', action='store_true',
                        help='Show this help message and exit')
     parsers.add_option('-l', '--log-level', default='default',
@@ -125,17 +115,16 @@ def cli():
     parsers.add_option('-p', '--port', type='int', default=default_port,
                        help='Server port [%d]' % default_port)
     parsers.add_option('-d', '--dir', default=os.getcwd(),
-                       help='Repository directory [%s]' % os.getcwd())
-    parsers.add_option('-r', '--remote', default='',
-                       help='Remote repository for push')
+                       help='Directory to serve files from [%s]' % os.getcwd())
+    parsers.add_option('-c', '--credentials', default='',
+                       help='Credentials for HTTPS push: token or username:token')
     parsers.add_option('--no-html', action='store_true', default=False,
                        help='Do not save file.html when file.md saved.')
-    parsers.add_option('-a', '--app', default=APP_DIR,
-                       help='Application location [%s]' % APP_DIR)
 
     options, args = parsers.parse_args()
     options = vars(options)
     options['convert'] = False
+    options['app'] = APP_DIR
 
     positional = [a for a in args if not a.startswith('-')]
     if positional:
@@ -148,17 +137,37 @@ def cli():
 
     if options['help']:
       print(desc)
-      print('-- Server --')
+      print('-- Web Editor --')
       parsers.print_help()
       print('')
       print('-- Conversion --')
-      parserc.set_usage(cusage)
-      parserc.print_help()
+      print(cusage)
       sys.exit(0)
 
-    repository = repository_info(options['remote'])
+    repository = repository_info()
     if repository is not None:
-      logger.info('Remote: ' + repository['url'])
-      logger.info('Credentials: ' + str(repository['credentials']))
+      url = repository['url']
+      logger.debug('Remote: ' + url)
+      if not repository['credentials']:
+        is_ssh = url.startswith('git@') or url.startswith('ssh://')
+        if is_ssh:
+          logger.warning(
+            'Push requires SSH key authentication.\n'
+            'Verify your key is loaded: ssh -T git@github.com'
+          )
+        else:
+          if sys.platform == 'darwin':
+            helper_hint = '  git config --global credential.helper osxkeychain   # macOS keychain'
+          elif sys.platform == 'win32':
+            helper_hint = '  git config --global credential.helper manager        # Git Credential Manager'
+          else:
+            helper_hint = ('  git config --global credential.helper cache         # Linux: cache in memory\n'
+                           '  git config --global credential.helper store         # Linux: plaintext (~/.git-credentials)')
+          logger.warning(
+            'No credentials found for remote URL in .git/config. Push request from web editor may fail.\n'
+            'To fix, run:\n'
+            + helper_hint + '\n'
+            'Or pass --credentials token (or username:token) on the command line.'
+          )
 
   return options

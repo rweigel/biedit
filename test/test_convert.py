@@ -3,14 +3,14 @@ import subprocess
 
 import pytest
 
-from biedit.cli import format_map
+from biedit.cli import FORMAT_MAP
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 MD_FILE = os.path.join(TEST_DIR, 'test_convert.md')
 NEEDLE = 'Hello from test_convert'
 
 # pdf excluded: binary format, not text-searchable
-FORMATS = {fmt: ext for fmt, ext in format_map.items() if fmt != 'pdf'}
+FORMATS = {fmt: ext for fmt, ext in FORMAT_MAP.items() if fmt != 'pdf'}
 
 
 @pytest.mark.parametrize('fmt,ext', FORMATS.items())

@@ -5,9 +5,24 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def repository_info(url_cl):
+def _find_git_dir():
+  search = os.getcwd()
+  while True:
+    candidate = os.path.join(search, '.git')
+    if os.path.exists(candidate):
+      return candidate
+    parent = os.path.dirname(search)
+    if parent == search:
+      return None
+    search = parent
 
-  gitPath = os.path.join(os.getcwd(), '.git')
+
+def repository_info():
+  """Return {'url': str, 'credentials': bool} for the current repo, or None."""
+
+  gitPath = _find_git_dir()
+  if gitPath is None:
+    return None
 
   def rm_credentials(url):
     return re.sub(r'\/\/(.+@)', '//', url)
@@ -15,32 +30,33 @@ def repository_info(url_cl):
   def normalize(url):
     return re.sub(r'\/$|\.git$|\.git\/', '', url)
 
-  credentials_cl = rm_credentials(url_cl) != url_cl
   url = None
   credentials = False
-  if os.path.exists(gitPath):
-    configFile = os.path.join(gitPath, 'config')
-    if configFile:
-      file1 = open(configFile, 'r')
-      lines = file1.readlines()
-      for line in lines:
-        line = line.strip()
-        if line.startswith('url = '):
-          line = line.replace('url = ', '')
-          credentials = True
-          url = rm_credentials(line)
-          if url == line:
-            logger.warning('No credentials in URL in ./git/config. '
-                           'Push from BiEdit will not be possible.')
+  configFile = os.path.join(gitPath, 'config')
+  with open(configFile, 'r') as f:
+    for line in f:
+      line = line.strip()
+      if line.startswith('url = '):
+        url = line.replace('url = ', '')
+        credentials = rm_credentials(url) != url
+        url = rm_credentials(url)
+        break
 
-  if url and url_cl:
-    if normalize(url) != normalize(url_cl):
-      raise ValueError('Repository URL given on command line \n   '
-                       + url_cl
-                       + '\ndoes not match URL in .git/config\n   '
-                       + url)
+  if url is None:
+    return None
+  return {'url': normalize(url), 'credentials': credentials}
 
-  if url:
-    return {'url': normalize(rm_credentials(url)), 'credentials': credentials}
-  if url_cl:
-    return {'url': normalize(rm_credentials(url_cl)), 'credentials': credentials_cl}
+
+def push_url(credentials):
+  """Build a push URL by injecting credentials into the repo's remote URL.
+
+  credentials: 'token' or 'username:token'
+  Returns the push URL string, or None if no HTTPS remote is found.
+  """
+  info = repository_info()
+  if info is None:
+    return None
+  url = info['url']
+  if not url.startswith('https://'):
+    return None
+  return re.sub(r'https://', f'https://{credentials}@', url)
