@@ -1,37 +1,21 @@
 import os
 import json
+import logging
 import subprocess
 
 from pathlib import Path
 from urllib.parse import urlparse, parse_qs
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 
-from biedit import _state
-from biedit._convert import convert
-from biedit._git import repository_info
+from biedit.convert import convert
+from biedit.git import repository_info
+
+logger = logging.getLogger(__name__)
 
 
-def dirwalk(selected, outfmt='html'):
+def dirwalk(selected):
 
-  print("Creating options drop-down with '" + selected + "' selected.")
-
-  def json_tree(selected):
-    base = os.path.abspath(os.getcwd())
-    json_list = []
-    for root, dirs, files in os.walk(base):
-      path = root.split(os.sep)
-      if len(path) == 1 and path[0] == '.':
-        continue
-      if '.git' in path:
-        continue
-
-      json_list.append({'title': path[-1], 'isSelectable': 'false', 'subs': []})
-      for file in files:
-        json_list[-1]['subs'].append({'title': file})
-    return json_list
-
-  if outfmt == 'json':
-    return json_tree(selected)
+  logger.debug("Creating options drop-down with '" + selected + "' selected.")
 
   base = os.path.abspath(os.getcwd())
   Nb = len(base.split(os.sep))  # Number of blanks
@@ -78,19 +62,24 @@ def dirwalk(selected, outfmt='html'):
 # https://stackoverflow.com/a/16838003
 class CallbackHTTPServer(HTTPServer):
 
+  def __init__(self, server_address, RequestHandlerClass, options, html2pdf, async_run):
+    self.options = options
+    self.html2pdf = html2pdf
+    self.async_run = async_run
+    super().__init__(server_address, RequestHandlerClass)
+
   def server_activate(self):
     HTTPServer.server_activate(self)
-    if _state.options["convert"]:
-      print("Server activated. Calling convert().")
-      convert()
+    if self.options["convert"]:
+      logger.info("Server activated. Calling convert().")
+      convert(self.options)
 
 
 class HTTPRequestHandler(SimpleHTTPRequestHandler):
 
   def log_message(self, format, *args):
-    if _state.options["loglevel"] == "debug":
-      print("%s - - [%s] %s" % \
-            (self.client_address[0], self.log_date_time_string(), format % args))
+    logger.debug('%s - - [%s] %s',
+                 self.client_address[0], self.log_date_time_string(), format % args)
 
   def end_headers(self):
     # Overrides default end_headers().
@@ -105,7 +94,7 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
     path = SimpleHTTPRequestHandler.translate_path(self, path)
     if self.path.startswith("/ui/"):
       relpath = os.path.relpath(path, os.getcwd())
-      fullpath = os.path.join(_state.options['app'], relpath)
+      fullpath = os.path.join(self.server.options['app'], relpath)
       return fullpath
     else:
       return path
@@ -131,21 +120,21 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
       self.end_headers()
 
       if initialFile != '' and not os.path.exists(initialFile):
-        print('Touching ' + initialFile)
+        logger.info('Touching ' + initialFile)
         Path(initialFile).touch()
 
       initialFile = initialFile.split(os.sep)[-1]
 
-      index = os.path.join(_state.options['app'], 'index.html')
+      index = os.path.join(self.server.options['app'], 'index.html')
       with open(index, "rt") as fin:
         data = fin.read()
-        print(f"Sending {index} with initialFile = '{initialFile}'")
+        logger.debug(f"Sending {index} with initialFile = '{initialFile}'")
         data = data.replace("${files}", dirwalk(URL.path[1:-1]))
         orig = "initialFile: 'index.md'"
         repl = f"initialFile: '{initialFile}'"
         data = data.replace(orig, repl)
 
-      if _state.options['no_html'] == True:
+      if self.server.options['no_html']:
         data = data.replace("noHTML: false", "noHTML: true")
 
       if not os.path.exists(".sourcedir"):
@@ -156,9 +145,9 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
       if "infile" in query and query["infile"][0].endswith('.html'):
         outfile = URL.path[1:].split("?")[0]
         infile = query["infile"][0][1:]
-        print('Generating: ' + outfile + " from " + infile)
-        _state.async_run(_state.html2pdf.start())
-        _state.async_run(_state.html2pdf.convert(infile, outfile))
+        logger.info('Generating: ' + outfile + ' from ' + infile)
+        self.server.async_run(self.server.html2pdf.start())
+        self.server.async_run(self.server.html2pdf.convert(infile, outfile))
         print('Generated: ' + outfile)
 
       # File has been generated. Hand off request to default do_GET(),
@@ -166,6 +155,12 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
       return SimpleHTTPRequestHandler.do_GET(self)
 
   def do_POST(self):
+
+    if self.server.options['convert']:
+      self.send_response(200)
+      self.send_header('Content-type', 'text/html; charset=utf-8')
+      self.end_headers()
+      return
 
     length = self.headers['content-length']
     post_bytes = self.rfile.read(int(length))
@@ -182,13 +177,13 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
         cmd = cmd + "; git commit " + file_base + "*" \
               + " -m '" + post['message'] + "'; echo Done"
       elif post['command'] == 'push':
-        repository = repository_info(_state.options['remote'])
+        repository = repository_info(self.server.options['remote'])
         if not repository['credentials']:
           msg = "Cannot push: server not configured with remote repository."
           self.send_error(501, {"Error": msg})
           return
         else:
-          cmd = "git push " + _state.options['remote'] + "; echo Done"
+          cmd = "git push " + self.server.options['remote'] + "; echo Done"
       else:
         self.send_response(200)
         self.send_header('Content-type', 'text/html; charset=utf-8')
@@ -199,17 +194,17 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
       self.send_header('Content-type', 'text/html; charset=utf-8')
       self.end_headers()
 
-      print("Executing " + cmd)
+      logger.info('Executing ' + cmd)
       stream = subprocess.Popen(cmd, shell=True,
                                 stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
       while True:
         line = stream.stdout.readline()
-        print(line.decode().rstrip())
+        logger.info(line.decode().rstrip())
         self.wfile.write(line)
         if not line:
           break
 
-    elif 'markdown' or 'html' or 'css' or 'latex' in post:
+    elif any(k in post for k in ('markdown', 'html', 'css', 'latex')):
 
       file_path = os.path.dirname(file_save)
       if file_path != '':
@@ -218,22 +213,22 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
       file_base = os.path.splitext(file_save)[0]
 
       if 'markdown' in post:
-        print("Writing " + os.path.join(_state.options['dir'], file_base + '.md'))
+        logger.info('Writing ' + os.path.join(self.server.options['dir'], file_base + '.md'))
         with open(file_base + '.md', 'w') as fh:
           fh.write(post['markdown'])
 
       if 'css' in post:
-        print("Writing " + os.path.join(_state.options['dir'], file_base + '.css'))
+        logger.info('Writing ' + os.path.join(self.server.options['dir'], file_base + '.css'))
         with open(file_base + '.css', 'w') as fh:
           fh.write(post['css'])
 
       if 'latex' in post:
-        print("Writing " + os.path.join(_state.options['dir'], file_base + '.tex'))
+        logger.info('Writing ' + os.path.join(self.server.options['dir'], file_base + '.tex'))
         with open(file_base + '.tex', 'w') as fh:
           fh.write(post['latex'])
 
       if 'html' in post and post['html'] != '':
-        print("Writing " + os.path.join(_state.options['dir'], file_base + '.html'))
+        logger.info('Writing ' + os.path.join(self.server.options['dir'], file_base + '.html'))
         with open(file_base + '.html', 'w') as fh:
           fh.write(post['html'])
 

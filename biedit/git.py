@@ -1,5 +1,8 @@
 import os
 import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def repository_info(url_cl):
@@ -27,8 +30,8 @@ def repository_info(url_cl):
           credentials = True
           url = rm_credentials(line)
           if url == line:
-            print('No credentials in URL in ./git/config. '
-                  + 'Push from BiEdit will not be possible.')
+            logger.warning('No credentials in URL in ./git/config. '
+                           'Push from BiEdit will not be possible.')
 
   if url and url_cl:
     if normalize(url) != normalize(url_cl):

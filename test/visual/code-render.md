@@ -23,7 +23,7 @@
 ```html-render-include
 <figure>
     <img
-        src="test.svg"
+        src="code-render.svg"
         alt="Grid"
         style="width:100%"
     />

@@ -2,23 +2,25 @@ import os
 import sys
 import time
 import asyncio
+import logging
 
-from pathlib import Path
+from biedit.cli import format_map
 
-from biedit import _state
+logger = logging.getLogger(__name__)
 
 
 def check_deps():
   try:
     from playwright.async_api import async_playwright
   except ImportError:
-    print("Generating PDF requires the playwright package. "
-          + "Install it with: pip install playwright && playwright install chromium")
+    logger.error('Generating PDF requires the playwright package. '
+                 'Install it with: pip install playwright && playwright install chromium')
 
 
 class MD2HTML:
 
-  def __init__(self):
+  def __init__(self, options):
+    self.options = options
     check_deps()
     return None
 
@@ -32,42 +34,44 @@ class MD2HTML:
     self._playwright = await async_playwright().start()
     self.browser = await self._playwright.chromium.launch(args=["--no-sandbox"], headless=True)
     self.page = await self.browser.new_page()
-    self.page.on('console', lambda msg: print("Browser console: " + msg.text))
-    print('%.4fs: browser launch time' % (time.time() - start))
+    self.page.on('console', lambda msg: logger.debug('Browser console: ' + msg.text))
+    logger.debug('%.4fs: browser launch time' % (time.time() - start))
 
     return self
 
+
   async def write(self, infile, outfile, outformat):
 
-    url = "http://localhost:" + str(_state.options['port'])
+    url = "http://localhost:" + str(self.options['port'])
     url = url + "/" + os.path.basename(infile) + "!#view=" + outformat
 
     start = time.time()
-    print("Starting page.goto " + infile + "!#view=" + outformat)
+    logger.debug('Starting page.goto ' + infile + '!#view=' + outformat)
     await self.page.goto(url, wait_until="domcontentloaded")
-    print("%.4fs: Finished page.goto" % (time.time() - start))
+    logger.debug('%.4fs: Finished page.goto' % (time.time() - start))
 
     start = time.time()
-    print("Starting page.reload()")
+    logger.debug('Starting page.reload()')
     # TODO: reload only needed when hash changes (when multiple calls)
     await self.page.reload()
-    print("%.4fs: Finished page.reload" % (time.time() - start))
+    logger.debug('%.4fs: Finished page.reload' % (time.time() - start))
 
     # Screenshot needed b/c it forces DOM rendering to complete before
     # evaluation call.
     start = time.time()
     outpng = outfile + '.png'
-    print("Starting page.screenshot. outpng = " + outpng)
+    logger.debug('Starting page.screenshot. outpng = ' + outpng)
     await self.page.screenshot(path=outpng)
-    print("%.4fs: Finished page.screenshot" % (time.time() - start))
+    logger.debug('%.4fs: Finished page.screenshot' % (time.time() - start))
 
     start = time.time()
     outdata = await self.page.evaluate(f'''() => {{
         return ace.edit("{outformat}").getValue()
     }}''')
-    print(f"%.4fs: {outformat} generation time" % (time.time() - start))
+    logger.debug('%.4fs: %s generation time' % (time.time() - start, outformat))
     with open(outfile, "w") as f:
       f.write(outdata)
+
 
   def convert(self, infile, outfile, outformat):
 
@@ -76,34 +80,29 @@ class MD2HTML:
       start = time.time()
       await self.start()
 
-      for outformat in _state.options['outformat']:
-        outfmt_split = outformat.split("-")
-        if len(outfmt_split) == 1:
-          outext = outfmt_split[0]
-        else:
-          outext = ".".join(outfmt_split[1:]) + "." + outfmt_split[0]
+      for outformat in self.options['out_format']:
+        ext = format_map[outformat]
 
         for infile in infiles:
-          if _state.options['outfile'].endswith("/"):
-            filename, ext = os.path.splitext(infile)
-            filename = filename.split(os.sep)[-1]
-            outfile = _state.options['outfile'] + filename + '.' + outext
+          if self.options['out_file'].endswith('/'):
+            filename = os.path.splitext(infile)[0].split(os.sep)[-1]
+            outfile = self.options['out_file'] + filename + ext
           else:
-            outfile = _state.options['outfile'].rsplit('.', maxsplit=1)[0] + '.' + outext
+            outfile = os.path.splitext(self.options['out_file'])[0] + ext
 
-          print("Converting: " + infile + " to " + outformat)
+          logger.info('Converting: ' + infile + ' to ' + outformat)
           await self.write(infile, outfile, outformat)
-          print("Wrote: " + outfile)
+          logger.info('Wrote: ' + outfile)
 
-      print("-------\n%.4fs: total time" % (time.time() - start))
+      logger.info('-------\n%.4fs: total time' % (time.time() - start))
       await self.browser.close()
       await self._playwright.stop()
 
     def run():
       import glob
-      infiles = glob.glob(_state.options['infile'])
+      infiles = glob.glob(self.options['in_file'])
       if len(infiles) == 0:
-        print(f"glob.glob('{_state.options['infile']}') returned no matches")
+        logger.error(f"glob.glob('{self.options['in_file']}') returned no matches")
         sys.exit(1)
 
       loop = asyncio.new_event_loop()
@@ -120,6 +119,7 @@ class MD2HTML:
 
 class HTML2PDF:
 
+
   def __init__(self):
     check_deps()
     return None
@@ -134,21 +134,24 @@ class HTML2PDF:
     self._playwright = await async_playwright().start()
     self.browser = await self._playwright.chromium.launch(args=["--no-sandbox"], headless=True)
     self.page = await self.browser.new_page()
-    self.page.on('console', lambda msg: print(msg.text))
-    print('Browser launch time: %.4f s' % (time.time() - start))
+    self.page.on('console', lambda msg: logger.debug(msg.text))
+    logger.debug('Browser launch time: %.4f s' % (time.time() - start))
 
     return self
 
   async def convert(self, html, outfile):
+
+    import pathlib
+
     if not html.startswith("http"):
-      html = Path(html).resolve()
+      html = pathlib.Path(html).resolve()
       html = f"file:///{html}"
 
     start = time.time()
 
     # waitUntil causes a fairly long delay but is needed for images
     # Doing a reload fixes problem of blank PDF (b/c rendering not complete)
-    print("Opening " + html)
+    logger.info('Opening ' + str(html))
     await self.page.goto(html)
     await self.page.emulate_media(media="print")
     await self.page.reload()  # Needed. See above about blank PDF.
@@ -156,9 +159,9 @@ class HTML2PDF:
         path=outfile,
         margin={"top": "0", "right": "0", "bottom": "0", "left": "0"}
     )
-    print("PDF generation time: %.4f s" % (time.time() - start))
+    logger.info('PDF generation time: %.4f s' % (time.time() - start))
 
 
-def convert():
-  md2html = MD2HTML()
-  md2html.convert(_state.options['infile'], _state.options['outfile'], _state.options['outformat'])
+def convert(options):
+  md2html = MD2HTML(options)
+  md2html.convert(options['in_file'], options['out_file'], options['out_format'])
