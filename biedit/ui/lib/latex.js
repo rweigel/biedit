@@ -188,6 +188,11 @@ function latex(includeHeader, cb) {
 
   function block(el) {
 
+    if (!el) {
+      util.log('block(): Called with undefined el, returning empty string.', 'renderLatex', 1);
+      return '';
+    }
+
     let doc = [];
 
     util.log('block(): Called with el:\n' + html_beautify(el.outerHTML),'renderLatex',1)

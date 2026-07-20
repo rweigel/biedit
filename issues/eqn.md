@@ -1,1 +1,0 @@
-Write an equation that relates $\widetilde{V}_{k+1}$ to $\widetilde{V}_{k}$

@@ -116,3 +116,8 @@ See resolved bug-028.
 
 <img src="test.svg"/>
 text
+
+# `img` followed by percent comment
+
+<img src="test.svg"/>
+%\input{Capacitance/figures/Parallel_Plates_Example}

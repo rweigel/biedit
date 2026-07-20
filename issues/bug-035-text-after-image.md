@@ -1,4 +1,4 @@
-1. Remove a line before a. and full list not indented.
+1. Remove a line before `a.` and full list not indented.
 
    <img src="../test/latex-from-html.svg"/>
 

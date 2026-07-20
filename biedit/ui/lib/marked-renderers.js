@@ -461,29 +461,19 @@ renderer.html = function(html, token) {
   })
 
 
-  let extract_last = false;
   if (!html.trimEnd().endsWith(">")) {
     // Catch case of
     // <div>a</div>
     // more text
     // Marked passes this to html renderer but $(html) drops "more text"
-    extract_last = true;
     util.log("HTML does not end with >",'renderHTML',1)
     let idx = html.lastIndexOf(">");
-    endText = html.substring(idx+1);
-    startHTML = html.substring(0,idx+1)
-    //html = startHTML + "<div>" + endText.replace(/\n/g,"\\htmlnewline") + "</div>";
-    html = startHTML + "<span>" + endText.replace(/\n*$/,"") + "</span>";
-    util.log("Calling parseMD with:\n" + html,'renderHTML',1)
-    parsed = $(parseMD(html, true, token.lineStart+1)); 
-    util.log("parsed:",'renderHTML',1);
-    util.log(parsed,'renderHTML',1);
-    // Last element was wrapped with <div> for parsing. Remove div
-    // and replace with its content.
-    let last_html = parsed.find('.inline-html').children().last().html()
-    parsed.find('.inline-html').children().last().replaceWith(last_html);
-    util.log("Returning\n" + html_beautify(parsed.prop('outerHTML')),'renderHTML',1)
-    return parsed.prop('outerHTML')
+    let endText = html.substring(idx + 1);
+    let startHTML = html.substring(0, idx + 1);
+    let parsed = parseMD(startHTML, true, token.lineStart);
+    parsed += parseMD(endText, true, token.lineStart + 1);
+    util.log("Returning\n" + html_beautify(parsed),'renderHTML',1)
+    return parsed
   }
 
   function validateHTML(htmlString){

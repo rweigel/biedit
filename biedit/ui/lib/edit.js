@@ -557,7 +557,10 @@ function preprocessMD(text) {
 
     // Block equations: $$ ... $$
     text = text.replace(/\$\$([\s\S]*?)\$\$/g, (match, inner) => {
-      return '$$' + protect(inner) + '$$';
+      let p = protect(inner);
+      // Escape +, -, * at start of lines to prevent GFM list parsing inside $$
+      p = p.replace(/^([+\-*])( )/gm, '\\$1$2');
+      return '$$' + p + '$$';
     });
 
     // Inline equations: $ ... $ (not $$)

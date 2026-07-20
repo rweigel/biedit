@@ -191,7 +191,7 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
               return
           else:
             target = ''
-          cmd = "git push " + target + "; echo Done"
+          cmd = "git push " + target
       else:
         self.send_response(200)
         self.send_header('Content-type', 'text/html; charset=utf-8')
@@ -203,11 +203,13 @@ class HTTPRequestHandler(SimpleHTTPRequestHandler):
       self.end_headers()
 
       logger.info('Executing ' + cmd)
-      stream = subprocess.Popen(cmd, shell=True,
-                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+      stream = subprocess.Popen(cmd,
+                                shell=True,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT)
       while True:
         line = stream.stdout.readline()
-        logger.info(line.decode().rstrip())
+        logger.info("  " + line.decode().rstrip())
         self.wfile.write(line)
         if not line:
           break
