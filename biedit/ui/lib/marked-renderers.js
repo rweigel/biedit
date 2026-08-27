@@ -686,6 +686,27 @@ renderer.html = function(html, token) {
 let originParagraph = renderer.paragraph.bind(renderer);
 renderer.paragraph = (text, token) => {
 
+  function renderBlock(text, token, padlength, blockType) {
+    let html;
+    if (token.lineStart) {
+      // Association input text with parsed text.
+      util.log("Parsing complete",'renderParagraph',1);
+      cache['p'][text_o] = text;
+      html =  '<div class="block">\n'
+            + `  <p padlength=${padlength} lo=${token.lineStart} lf=${token.lineEnd}>${text}</p>\n`
+            + `  ${infoDiv(token, blockType)}\n`
+            + '</div>\n';
+      util.log("Returning:\n" + html,'renderParagraph',1);
+      //util.log("Returning:\n" + html_beautify(html),'renderParagraph',1);
+    } else {
+      // TODO: Document reason for this case.
+      util.log("No token.lineStart. Calling original marked paragraph renderer with:\n" + text, 'renderParagraph',1);
+      html = originParagraph(text);
+      util.log("Parsed text:\n" + html, 'renderParagraph',1);
+    }
+    return html
+  }
+
   util.log("text:\n" + text,'renderParagraph',1);
   util.log("token",'renderParagraph',1);
   util.log(token,'renderParagraph',1);
@@ -744,12 +765,9 @@ renderer.paragraph = (text, token) => {
   if (true) {
     if (cache['p'][text_o]) {
       util.log("Cache hit for:\n" + text,'renderCache',1);
-      let ret = `<div class="block">
-            <p padlength=${padlength} lo=${token.lineStart} lf=${token.lineEnd}>${cache['p'][text_o]}</p>
-            ${infoDiv(token, blockType)}
-         </div>\n`
-      util.log("Returning:\n" + html_beautify(ret),'renderCache',1);
-      return  ret;
+      let html = renderBlock(cache['p'][text_o], token, padlength, blockType);
+      util.log("Returning:\n" + html_beautify(html),'renderCache',1);
+      return  html;
     }
   }
 
@@ -783,22 +801,7 @@ renderer.paragraph = (text, token) => {
   text = textr.html();
   //console.log(textr)
 
-  if (token.lineStart) {
-    // Association input text with parsed text.
-    util.log("Parsing complete",'renderParagraph',1);
-    cache['p'][text_o] = text;
-    html =  '<div class="block">\n'
-          + `  <p padlength=${padlength} lo=${token.lineStart} lf=${token.lineEnd}>${text}</p>\n`
-          + `  ${infoDiv(token, blockType)}\n`
-          + '</div>\n';
-    util.log("Returning:\n" + html,'renderParagraph',1);
-    //util.log("Returning:\n" + html_beautify(html),'renderParagraph',1);
-  } else {
-    // TODO: Document reason for this case.
-    util.log("No token.lineStart. Calling original marked paragraph renderer with:\n" + text, 'renderParagraph',1);
-    html = originParagraph(text);
-    util.log("Parsed text:\n" + html, 'renderParagraph',1);
-  }
+  html = renderBlock(text, token, padlength, blockType);
 
   //util.toc(startTime0,"to parse paragraph");
   cache['p'][text_o] = text;
