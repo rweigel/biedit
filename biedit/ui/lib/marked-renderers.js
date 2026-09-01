@@ -532,19 +532,18 @@ renderer.html = function(html, token) {
     return html;
   }
 
-  if (1) {
-    summary = htmljq.find("summary");
-    if (summary.length > 0) {
-      var summaryText = summary.text();
-      // This won't work if equation in summary b/c it is already
-      // converted to HTML.
-      util.log("Summary text original: " + summaryText,'renderHTML',1);
-      summaryParsed = marked(summaryText);
-      summaryText = $(summaryParsed).find('p').first().html();
-      util.log("Summary text after parsing MD: "
-                + summaryText,'renderHTML',1);
-      summary.remove()
-    }
+  let summary = htmljq.find("summary");
+  let summaryText = "";
+  if (summary.length > 0) {
+    summaryText = summary.text();
+    // This won't work if equation in summary b/c it is already
+    // converted to HTML.
+    util.log("Summary text original: " + summaryText,'renderHTML',1);
+    let summaryParsed = marked(summaryText);
+    summaryText = $(summaryParsed).find('p').first().html() || "";
+    util.log("Summary text after parsing MD: "
+              + summaryText,'renderHTML',1);
+    summary.remove()
   }
 
   if (htmljq.length == 1) {
@@ -651,15 +650,21 @@ renderer.html = function(html, token) {
     }
   }
 
-  if (summary.length > 0) {
-    htmljq[0].innerHTML = "<summary>" + summaryText + "</summary>" 
-                        + htmljq[0].innerHTML;
-  }
-  // By default, no open attribute => closed by default.
-  // Here we add open attribute unless there is a closed attribute (which
-  // is not standard).
-  if (html.startsWith("<details closed") == false) {
-    htmljq.prop("open",true);
+  // htmlx is what is returned, so <summary> and open must be applied to it
+  // and not to htmljq.
+  if (summary.length > 0 || htmlo.trimStart().startsWith("<details")) {
+    let htmlxjq = $("<div/>").append($(htmlx));
+    let details = htmlxjq.find("details");
+    if (summary.length > 0 && details.length > 0) {
+      details.first().prepend("<summary>" + summaryText + "</summary>");
+    }
+    // By default, no open attribute => closed by default.
+    // Here we add open attribute unless there is a closed attribute (which
+    // is not standard).
+    if (htmlo.trimStart().startsWith("<details closed") == false) {
+      details.prop("open", true);
+    }
+    htmlx = htmlxjq.html();
   }
 
   //html = htmljq.attr('lo', token.lineStart).attr('lf', lf)

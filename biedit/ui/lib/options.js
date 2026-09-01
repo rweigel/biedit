@@ -35,7 +35,7 @@ app['logLevel'] =
     'renderCode': 0,
     'renderList': 0,
     'renderListItem': 0,
-    'renderHTML': 0,
+    'renderHTML': 1,
     'renderParagraph': 0,
     'renderLatex': 0,
 
