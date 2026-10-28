@@ -222,6 +222,7 @@ html, body {
       border: 1px solid black;
     }
 
+    
 /*
 #pdf-preview, #html, #html-raw, #md-reference {
   display: none;
@@ -306,4 +307,9 @@ a.broken-internal-link {
 
 .block .error {
   color: red;
+}
+
+/* Protect KaTeX font styling from global font overrides */
+.katex, .katex * {
+    font-family: KaTeX_Main, "Times New Roman", serif !important;
 }
